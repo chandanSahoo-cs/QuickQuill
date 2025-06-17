@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   BoldIcon,
   ChevronDownIcon,
+  HighlighterIcon,
   ItalicIcon,
   ListTodoIcon,
   LucideIcon,
@@ -15,6 +16,7 @@ import {
   UnderlineIcon,
   Undo2Icon,
 } from "lucide-react";
+import { type ColorResult, SketchPicker } from "react-color";
 import { useEditorStore } from "@/store/useEditorStore";
 import { Separator } from "@/components/ui/separator";
 
@@ -25,6 +27,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Level } from "@tiptap/extension-heading";
+import Color from "@tiptap/extension-color";
+
+
 
 const FontFamilyButton = () => {
   const { editor } = useEditorStore();
@@ -146,6 +151,60 @@ const HeadingLevelButton = () => {
   );
 };
 
+const TextColorButton = () =>{
+  const {editor} = useEditorStore();
+  const value = editor?.getAttributes("textStyle").color || "#000000";
+  const onChange = (color: ColorResult) =>{
+    editor?.chain().focus().setColor(color.hex).run();
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm"
+        >
+          <span className="text-xs">A</span>
+          <div className="h-0.5 w-full" style={{backgroundColor:value}}/>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-0 border">
+        <SketchPicker
+          color={value}
+          onChange={onChange}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+const HighlightButton = () =>{
+  const {editor} = useEditorStore();
+  let value = editor?.getAttributes("highlight").color || "#FFFFFF";
+  const onChange = (color: ColorResult) =>{
+    editor?.chain().focus().setHighlight({color:color.hex}).run();
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+        className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm"
+        >
+        <HighlighterIcon className="size-4"/>
+        <div className="h-0.5 w-full" style={{backgroundColor:value}}/>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-0 border">
+        <SketchPicker
+          color={value}
+          onChange={onChange}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 interface ToolbarButtonProps {
   onClick?: () => void;
   isActive?: boolean;
@@ -263,6 +322,10 @@ export const Toolbar = () => {
       <FontFamilyButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       <HeadingLevelButton />
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <TextColorButton/>
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <HighlightButton/>
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {sections[1].map((item) => (
         <ToolbarButton key={item.label} {...item} />

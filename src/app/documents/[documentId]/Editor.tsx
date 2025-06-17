@@ -15,6 +15,7 @@ import { useEditorStore } from "@/store/useEditorStore";
 import FontFamily from '@tiptap/extension-font-family'
 import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
+import { Color } from '@tiptap/extension-color'
 
 export const Editor = () => {
   const { setEditor } = useEditorStore();
@@ -65,7 +66,10 @@ export const Editor = () => {
       Underline,
       FontFamily,
       TextStyle,
-      Highlight
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Color
     ],
     content: `
         <table>
