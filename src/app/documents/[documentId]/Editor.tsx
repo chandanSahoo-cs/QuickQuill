@@ -18,6 +18,7 @@ import Highlight from '@tiptap/extension-highlight'
 import { Color } from '@tiptap/extension-color'
 import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
+import { FontSizeExtension } from "@/extensions/font-size";
 
 export const Editor = () => {
   console.log("Test");
@@ -56,6 +57,7 @@ export const Editor = () => {
     },
     extensions: [
       StarterKit,
+      FontSizeExtension,
       TaskItem.configure({
         nested: true,
       }),
