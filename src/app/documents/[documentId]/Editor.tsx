@@ -16,8 +16,11 @@ import FontFamily from '@tiptap/extension-font-family'
 import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
 import { Color } from '@tiptap/extension-color'
+import Link from '@tiptap/extension-link'
+import TextAlign from '@tiptap/extension-text-align'
 
 export const Editor = () => {
+  console.log("Test");
   const { setEditor } = useEditorStore();
   const editor = useEditor({
     onCreate({ editor }) {
@@ -69,7 +72,15 @@ export const Editor = () => {
       Highlight.configure({
         multicolor: true,
       }),
-      Color
+      Color,
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        defaultProtocol:"https"
+      }),
+      TextAlign.configure({
+        types : ["heading","paragraph"]
+      })
     ],
     content: `
         <table>
