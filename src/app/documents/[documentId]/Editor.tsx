@@ -1,7 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import Underline from '@tiptap/extension-underline'
+import Underline from "@tiptap/extension-underline";
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
@@ -12,13 +12,14 @@ import TableRow from "@tiptap/extension-table-row";
 import Image from "@tiptap/extension-image";
 import ImageResize from "tiptap-extension-resize-image";
 import { useEditorStore } from "@/store/useEditorStore";
-import FontFamily from '@tiptap/extension-font-family'
-import TextStyle from '@tiptap/extension-text-style'
-import Highlight from '@tiptap/extension-highlight'
-import { Color } from '@tiptap/extension-color'
-import Link from '@tiptap/extension-link'
-import TextAlign from '@tiptap/extension-text-align'
+import FontFamily from "@tiptap/extension-font-family";
+import TextStyle from "@tiptap/extension-text-style";
+import Highlight from "@tiptap/extension-highlight";
+import { Color } from "@tiptap/extension-color";
+import Link from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
 import { FontSizeExtension } from "@/extensions/font-size";
+import { LineHeightExtension } from "@/extensions/line-height";
 
 export const Editor = () => {
   console.log("Test");
@@ -27,26 +28,26 @@ export const Editor = () => {
     onCreate({ editor }) {
       setEditor(editor);
     },
-    onDestroy(){
-      setEditor(editor)
+    onDestroy() {
+      setEditor(editor);
     },
-    onUpdate({editor}){
-      setEditor(editor)
+    onUpdate({ editor }) {
+      setEditor(editor);
     },
-    onSelectionUpdate({editor}){
-      setEditor(editor)
+    onSelectionUpdate({ editor }) {
+      setEditor(editor);
     },
-    onTransaction({editor}){
-      setEditor(editor)
+    onTransaction({ editor }) {
+      setEditor(editor);
     },
-    onFocus({editor}){
-      setEditor(editor)
+    onFocus({ editor }) {
+      setEditor(editor);
     },
-    onBlur({editor}){
-      setEditor(editor)
+    onBlur({ editor }) {
+      setEditor(editor);
     },
-    onContentError({editor}){
-      setEditor(editor)
+    onContentError({ editor }) {
+      setEditor(editor);
     },
     editorProps: {
       attributes: {
@@ -56,8 +57,12 @@ export const Editor = () => {
       },
     },
     extensions: [
-      StarterKit,
+      // Custom Extensions
       FontSizeExtension,
+      LineHeightExtension,
+
+      // In Built Extensions
+      StarterKit,
       TaskItem.configure({
         nested: true,
       }),
@@ -78,11 +83,11 @@ export const Editor = () => {
       Link.configure({
         openOnClick: false,
         autolink: true,
-        defaultProtocol:"https"
+        defaultProtocol: "https",
       }),
       TextAlign.configure({
-        types : ["heading","paragraph"]
-      })
+        types: ["heading", "paragraph"],
+      }),
     ],
     content: `
         <table>
