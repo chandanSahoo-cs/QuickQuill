@@ -21,7 +21,9 @@ import TextAlign from "@tiptap/extension-text-align";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
 
-import { Ruler } from "./Ruler";
+//ruler
+import { HorizontalRuler } from "./HorizontalRuler";
+import { VerticalRuler } from "./VerticalRuler";
 
 export const Editor = () => {
   const { setEditor } = useEditorStore();
@@ -54,7 +56,7 @@ export const Editor = () => {
     editorProps: {
       attributes: {
         style:
-          "padding-left: 56px; padding-right: 56px; padding-top: 56px padding-buttom: 56px",
+          "padding-left: 56px; padding-right: 56px; padding-top: 56px padding-bottom: 56px",
         class:
           "focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text",
       },
@@ -110,12 +112,23 @@ export const Editor = () => {
       `,
   });
 
-  return (
-    <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:bg-white print:overflow-visible">
-      <Ruler />
-      <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
+return (
+  <div className="size-full bg-[#F9FBFD] print:bg-white px-4 py-2 print:p-0 overflow-auto print:overflow-visible">
+    <div className="grid grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
+      <div className="col-span-2">
+        <HorizontalRuler />
+      </div>
+
+      <div className="py-4">
+        <VerticalRuler/>
+      </div>
+
+      {/* Editor */}
+      <div className="min-w-max w-[816px] mx-auto py-4 print:py-0 print:w-full print:min-w-0">
         <EditorContent editor={editor} />
       </div>
     </div>
-  );
+  </div>
+);
+
 };

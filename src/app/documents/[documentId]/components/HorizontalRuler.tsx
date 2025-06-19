@@ -5,7 +5,7 @@ const markers = Array.from({ length: 83 }, (_, i) => i);
 const PAGE_WIDTH = 816;
 const MIN_SPACE = 100;
 
-export const Ruler = () => {
+export const HorizontalRuler = () => {
   const [leftMargin, setLeftMargin] = useState(56);
   const [rightMargin, setRightMargin] = useState(56);
 
@@ -76,7 +76,7 @@ export const Ruler = () => {
   return (
     <div
       ref={rulerRef}
-      className="h-6 border-b border-gray-300 flex items-end relative select-none print:hidden">
+      className="h-6 border-b border-gray-300 flex items-end relative select-none print:hidden pt-[28px]">
       <div
         id="ruler-container"
         className="max-w-[816px] mx-auto w-full h-full relative">
