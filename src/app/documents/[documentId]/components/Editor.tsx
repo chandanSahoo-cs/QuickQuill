@@ -1,25 +1,25 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import Underline from "@tiptap/extension-underline";
-import StarterKit from "@tiptap/starter-kit";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
+import { FontSizeExtension } from "@/extensions/font-size";
+import { LineHeightExtension } from "@/extensions/line-height";
+import { useEditorStore } from "@/store/useEditorStore";
+import { Color } from "@tiptap/extension-color";
+import FontFamily from "@tiptap/extension-font-family";
+import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import Image from "@tiptap/extension-image";
-import ImageResize from "tiptap-extension-resize-image";
-import { useEditorStore } from "@/store/useEditorStore";
-import FontFamily from "@tiptap/extension-font-family";
-import TextStyle from "@tiptap/extension-text-style";
-import Highlight from "@tiptap/extension-highlight";
-import { Color } from "@tiptap/extension-color";
-import Link from "@tiptap/extension-link";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
 import TextAlign from "@tiptap/extension-text-align";
-import { FontSizeExtension } from "@/extensions/font-size";
-import { LineHeightExtension } from "@/extensions/line-height";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import ImageResize from "tiptap-extension-resize-image";
 
 //ruler
 import { HorizontalRuler } from "./HorizontalRuler";
@@ -112,23 +112,17 @@ export const Editor = () => {
       `,
   });
 
-return (
-  <div className="size-full bg-[#F9FBFD] print:bg-white px-4 py-2 print:p-0 overflow-auto print:overflow-visible">
-    <div className="grid grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
-      <div className="col-span-2">
-        <HorizontalRuler />
-      </div>
-
-      <div className="py-4">
-        <VerticalRuler/>
-      </div>
-
-      {/* Editor */}
-      <div className="min-w-max w-[816px] mx-auto py-4 print:py-0 print:w-full print:min-w-0">
-        <EditorContent editor={editor} />
+  return (
+    <div className="size-full overflow-x-auto bg-[#F9FBFD]  py-2 print:p-0 print:bg-white print:overflow-visible">
+      <HorizontalRuler />
+      <div className="relative">
+        <div className="absolute left-0 top-0 px-4">
+          <VerticalRuler />
+        </div>
+        <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 };

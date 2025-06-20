@@ -55,7 +55,7 @@ export const VerticalRuler = () => {
   return (
     <div
       ref={rulerRef}
-      className="w-6 border-r border-gray-300 relative select-none print:hidden pr-[32px]">
+      className="w-6 border-r border-gray-300 relative select-none print:hidden pt-4">
       <div
         id="vertical-ruler-container"
         className="relative h-[1056px] mx-auto w-full">
