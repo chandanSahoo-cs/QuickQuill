@@ -26,8 +26,8 @@ import {
   LinkButton,
   ListButton,
   TextColorButton,
-} from "./toolbar-compex-buttons";
-import { HighlightButton } from "./toolbar-compex-buttons/HighlightButton";
+} from "./toolbar-components";
+import { HighlightButton } from "./toolbar-components/HighlightButton";
 
 interface ToolbarButtonProps {
   onClick?: () => void;
