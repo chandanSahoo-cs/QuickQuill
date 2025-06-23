@@ -1,5 +1,7 @@
 "use client";
 
+import {useLiveblocksExtension} from "@liveblocks/react-tiptap"
+
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
 import { PageBreakExtension } from "@/extensions/page-break";
@@ -29,11 +31,15 @@ import { VerticalRuler } from "./VerticalRuler";
 import { useEffect, useRef } from "react";
 
 export const Editor = () => {
+  const liveblocks = useLiveblocksExtension();
   const { setEditor } = useEditorStore();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
+      // Liveblock Extension
+      liveblocks,
+
       // Custom Extensions
       FontSizeExtension,
       LineHeightExtension,

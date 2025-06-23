@@ -21,6 +21,8 @@ export default defineSchema({
       filterFields: ["ownerId", "organizationId"],
     }),
 
+    //TODO: Add organization schema
+
   commits: defineTable({
     documentId: v.id("documents"),
     parentCommitId: v.optional(v.id("commits")),

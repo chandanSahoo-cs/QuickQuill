@@ -38,8 +38,7 @@ import {
 import { BsFilePdf } from "react-icons/bs";
 import { DocumentInput } from "./navbar-components/DocumentInput";
 import { TableMenu } from "./navbar-components/TableMenu";
-
-import html2PDF from "jspdf-html2canvas";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 
 export const Navbar = () => {
   const { editor } = useEditorStore();
@@ -92,7 +91,6 @@ export const Navbar = () => {
     });
     onDownload(blob, "document.txt");
   };
-
 
   return (
     <nav className="flex items-center justify-between">
@@ -232,6 +230,15 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
+        <div className="flex gap-3 items-center pl-6">
+          <OrganizationSwitcher
+            afterCreateOrganizationUrl="/"
+            afterLeaveOrganizationUrl="/"
+            afterSelectOrganizationUrl="/"
+            afterSelectPersonalUrl="/"
+          />
+        <UserButton />
+        </div>
     </nav>
   );
 };
