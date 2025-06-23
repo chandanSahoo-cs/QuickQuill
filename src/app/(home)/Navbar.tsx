@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SearchInput } from "./SearchInput";
-
+import {UserButton} from "@clerk/nextjs"
 export const Navbar = () => {
   return (
     <nav className="flex items-center justify-between h-full w-full">
@@ -12,7 +12,7 @@ export const Navbar = () => {
         <h3 className="text-xl">QuickQuill</h3>
       </div>
       <SearchInput/>
-      <div/>
+      <UserButton/>
     </nav>
   );
 };

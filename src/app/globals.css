@@ -257,3 +257,69 @@ body {
     }
   }
 }
+
+/*Auto Paginator*/
+@layer components {
+  .page-break {
+    @apply relative my-16 h-6 w-full print:hidden;
+  }
+
+  .page-break::before,
+  .page-break::after {
+    content: "";
+    @apply absolute left-0 w-full border-t border-gray-300;
+  }
+
+  .page-break::before {
+    top: 0;
+  }
+
+  .page-break::after {
+    bottom: 0;
+  }
+}
+
+/* Custom Clerk form styling */
+.auth-form-container .cl-rootBox {
+  width: 100% !important;
+}
+
+.auth-form-container .cl-card {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.auth-form-container .cl-footer {
+  display: none !important;
+}
+
+.auth-form-container .cl-footerAction {
+  display: none !important;
+}
+
+.auth-form-container .cl-footerActionLink {
+  display: none !important;
+}
+
+.auth-form-container .cl-formButtonPrimary {
+  background-color: rgb(147 51 234) !important;
+  border-radius: 8px !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+
+.auth-form-container .cl-formButtonPrimary:hover {
+  background-color: rgb(126 34 206) !important;
+}
+
+.auth-form-container .cl-formFieldInput {
+  border-color: rgb(229 231 235) !important;
+  border-radius: 6px !important;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+}
+
+.auth-form-container .cl-formFieldInput:focus {
+  border-color: rgb(147 51 234) !important;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1) !important;
+}
+

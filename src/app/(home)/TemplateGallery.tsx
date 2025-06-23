@@ -7,12 +7,42 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { cn } from "@/lib/utils";
 import { templates } from "@/constants/template";
+import { cn } from "@/lib/utils";
+import { useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { api } from "../../../convex/_generated/api";
+import { FullScreenLoader } from "@/components/FullScreenLoader";
 
 export const TemplateGallery = () => {
-  const isCreating = false;
+  const router = useRouter();
+  const create = useMutation(api.documents.create);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const onTemplateClick = async (title: string, initialContent: string) => {
+    try {
+      setIsCreating(true);
+
+      const documentId = await create({ title, initialContent });
+
+      if (!documentId) {
+        throw new Error("Document creation failed.");
+      }
+
+      router.push(`/documents/${documentId}`);
+    } catch (error) {
+      console.error("Failed to create document:", error);
+      toast.error("Failed to create document");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   return (
+    <>
+    {isCreating && <FullScreenLoader/>}
     <div className="bg-[#F1F3F4]">
       <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-y-4 ">
         <h3 className="font-medium">Start a new document</h3>
@@ -29,7 +59,7 @@ export const TemplateGallery = () => {
                   )}>
                   <button
                     disabled={isCreating}
-                    onClick={() => {}}
+                    onClick={() => onTemplateClick(template.label, "")}
                     style={{
                       backgroundImage: `url(${template.imageUrl})`,
                       backgroundSize: "cover",
@@ -45,10 +75,11 @@ export const TemplateGallery = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious/>
-          <CarouselNext/>
+          <CarouselPrevious />
+          <CarouselNext />
         </Carousel>
       </div>
     </div>
+    </>
   );
 };

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.5.1",
     "@hookform/resolvers": "^5.1.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -58,8 +59,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "convex": "^1.17.3",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
+    "framer-motion": "^12.18.1",
     "html2pdf.js": "^0.9.3",
     "input-otp": "^1.4.2",
     "jspdf-html2canvas": "^1.5.2",

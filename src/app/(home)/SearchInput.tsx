@@ -52,7 +52,6 @@ export const SearchInput = () => {
           </Button>
         )}
       </form>
-      Search
     </div>
   );
 };
