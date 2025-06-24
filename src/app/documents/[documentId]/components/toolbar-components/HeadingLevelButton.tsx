@@ -1,56 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  AlignCenterIcon,
-  AlignJustifyIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
-  BoldIcon,
-  ChevronDownIcon,
-  HighlighterIcon,
-  ImageIcon,
-  ItalicIcon,
-  Link2Icon,
-  ListCollapseIcon,
-  ListIcon,
-  ListOrderedIcon,
-  ListTodoIcon,
-  LucideIcon,
-  MessageSquarePlusIcon,
-  MinusIcon,
-  PlusIcon,
-  PrinterIcon,
-  Redo2Icon,
-  RemoveFormattingIcon,
-  SearchIcon,
-  SpellCheckIcon,
-  UnderlineIcon,
-  Undo2Icon,
-  UploadIcon,
-} from "lucide-react";
-import { type ColorResult, SketchPicker } from "react-color";
 import { useEditorStore } from "@/store/useEditorStore";
-import { Separator } from "@/components/ui/separator";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ChevronDownIcon } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Level } from "@tiptap/extension-heading";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 export const HeadingLevelButton = () => {
   const { editor } = useEditorStore();

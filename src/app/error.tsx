@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Home, RotateCcw } from "lucide-react"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 interface ErrorPageProps {
   error?: Error & { digest?: string }
@@ -150,10 +151,10 @@ const ErrorPage = ({ error, reset, showHomeButton = true }: ErrorPageProps) => {
                 variant="ghost"
                 className="font-semibold px-8 py-3 text-purple-600 hover:text-purple-700 hover:bg-purple-100/50 transition-all duration-200 rounded-full"
               >
-                <a href="/">
+                <Link href="/">
                   <Home className="w-4 h-4 mr-2" />
                   Return home
-                </a>
+                </Link>
               </Button>
             </motion.div>
           )}

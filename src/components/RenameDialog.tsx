@@ -36,7 +36,7 @@ export const RenameDialog = ({
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsUpdating(true);
-    const trimmedTitle = title.trim();
+    // const trimmedTitle = title.trim();
     //TODO : Check for empty title
     update({ documentId, title: title.trim() || "Untitled" })
       .then(() => toast.success("Document updated"))

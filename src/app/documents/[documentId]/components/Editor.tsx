@@ -26,28 +26,27 @@ import StarterKit from "@tiptap/starter-kit";
 import ImageResize from "tiptap-extension-resize-image";
 
 import { HorizontalRuler } from "./HorizontalRuler";
-import { VerticalRuler } from "./VerticalRuler";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Threads } from "./Threads";
 
-import { useStorage } from "@liveblocks/react";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
+import { useStorage } from "@liveblocks/react";
 
 interface EditorProps {
   initialContent?: string | undefined;
 }
 
-export const Editor = ({initialContent}:EditorProps) => {
+export const Editor = ({ initialContent }: EditorProps) => {
   const liveblocks = useLiveblocksExtension({
     initialContent,
-    offlineSupport_experimental:true,
+    offlineSupport_experimental: true,
   });
   const { setEditor } = useEditorStore();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const leftMargin = useStorage(root=>root.leftMargin)
-  const rightMargin = useStorage(root=>root.rightMargin)
+  const leftMargin = useStorage((root) => root.leftMargin);
+  const rightMargin = useStorage((root) => root.rightMargin);
 
   const editor = useEditor({
     extensions: [
@@ -115,66 +114,6 @@ export const Editor = ({initialContent}:EditorProps) => {
     },
   });
 
-  useEffect(() => {
-    if (!editor || !wrapperRef.current) return;
-
-    const observer = new ResizeObserver(() => {
-      debouncePaginate();
-    });
-
-    observer.observe(wrapperRef.current);
-
-    return () => observer.disconnect();
-  }, [editor]);
-
-  const debouncePaginate = () => {
-    clearTimeout((window as any).__pageBreakTimeout);
-    (window as any).__pageBreakTimeout = setTimeout(() => {
-      paginate();
-    }, 100);
-  };
-
-  const paginate = () => {
-    console.log("Paginate");
-    const prose = wrapperRef.current?.querySelector(".ProseMirror");
-    if (!prose) return;
-
-    const blocks = Array.from(prose.children) as HTMLElement[];
-    const PAGE_HEIGHT = 1122;
-    let heightSoFar = 0;
-    const breakPositions: number[] = [];
-
-    blocks.forEach((block, index) => {
-      if (block.dataset.pageBreak !== undefined) {
-        heightSoFar = 0;
-        return;
-      }
-
-      const blockHeight = block.offsetHeight;
-
-      if (heightSoFar + blockHeight > PAGE_HEIGHT) {
-        breakPositions.push(index);
-        heightSoFar = blockHeight;
-      } else {
-        heightSoFar += blockHeight;
-      }
-    });
-
-    breakPositions.reverse().forEach((index) => {
-      const block = blocks[index];
-      const pos = editor?.view.posAtDOM(block, 0);
-      if (typeof pos === "number" && !isNaN(pos)) {
-        editor
-          ?.chain()
-          .focus()
-          .insertContentAt(pos, { type: "pageBreak" })
-          .run();
-      } else {
-        console.warn("Could not insert page break for block at index", index);
-      }
-    });
-  };
-
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] py-2">
       <HorizontalRuler />
@@ -186,7 +125,7 @@ export const Editor = ({initialContent}:EditorProps) => {
           className="flex justify-center py-4 w-full mx-auto editor-wrapper"
           ref={wrapperRef}>
           <EditorContent editor={editor} />
-          <Threads editor={editor}/>
+          <Threads editor={editor} />
         </div>
       </div>
     </div>

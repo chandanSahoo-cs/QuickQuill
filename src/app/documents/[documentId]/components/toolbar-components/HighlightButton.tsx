@@ -12,7 +12,7 @@ import {
 
 export const HighlightButton = () => {
   const { editor } = useEditorStore();
-  let value = editor?.getAttributes("highlight").color || "#FFFFFF";
+  const value = editor?.getAttributes("highlight").color || "#FFFFFF";
   const onChange = (color: ColorResult) => {
     editor?.chain().focus().setHighlight({ color: color.hex }).run();
   };

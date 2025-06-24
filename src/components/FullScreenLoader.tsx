@@ -1,13 +1,10 @@
-import { LoaderIcon } from "lucide-react";
-
 interface FullScreenLoaderProps {
-    label?: string;
-};
-
+  label?: string;
+}
 
 import { motion } from "framer-motion";
 
-export const FullScreenLoader = ({label}:FullScreenLoaderProps) => {
+export const FullScreenLoader = ({ label }: FullScreenLoaderProps) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       <div className="text-center">
@@ -22,8 +19,7 @@ export const FullScreenLoader = ({label}:FullScreenLoaderProps) => {
             duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
-          }}
-        >
+          }}>
           🪶
         </motion.div>
 
@@ -57,9 +53,8 @@ export const FullScreenLoader = ({label}:FullScreenLoaderProps) => {
             duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
-          }}
-        >
-          Preparing your quill...
+          }}>
+          {label ?? "Preparing your quill..."}
         </motion.p>
 
         {/* Subtle Ink Splash Effect */}
@@ -71,8 +66,7 @@ export const FullScreenLoader = ({label}:FullScreenLoaderProps) => {
             duration: 3,
             repeat: Infinity,
             ease: "easeInOut",
-          }}
-        >
+          }}>
           <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-300/20 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-pink-300/20 rounded-full blur-2xl" />
         </motion.div>
