@@ -49,6 +49,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
   const rightMargin = useStorage((root) => root.rightMargin);
 
   const editor = useEditor({
+    autofocus:true,
     extensions: [
       // Liveblock Extension
       liveblocks,
