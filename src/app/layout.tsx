@@ -5,6 +5,8 @@ import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import { Toaster } from "sonner";
+import "@liveblocks/react-ui/styles.css";
+import "@liveblocks/react-tiptap/styles.css";
 
 const inter = Inter({
   subsets: ["latin"],

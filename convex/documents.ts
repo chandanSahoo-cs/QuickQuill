@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
+import { toast } from "sonner";
 import { mutation, query } from "./_generated/server";
 
 export const create = mutation({
@@ -12,9 +13,9 @@ export const create = mutation({
     if (!user) {
       throw new ConvexError("Unauthorized");
     }
-    
+
     const now = new Date().toISOString();
-    
+
     const organizationId = (user.organization_id ?? undefined) as
       | string
       | undefined;
@@ -25,7 +26,7 @@ export const create = mutation({
       const docId = await ctx.db.insert("documents", {
         title: args.title ?? "Untitled Document",
         ownerId: user.subject,
-        organizationId:organizationId,
+        organizationId: organizationId,
         initialContent: args.initialContent,
         createdAt: now,
         updatedAt: now,
@@ -88,7 +89,7 @@ export const get = query({
           .withSearchIndex("search_title", (q) =>
             q.search("title", search).eq("organizationId", organizationId)
           )
-          .paginate(paginationOpts)
+          .paginate(paginationOpts);
       }
 
       if (search) {
@@ -100,12 +101,14 @@ export const get = query({
           .paginate(paginationOpts);
       }
 
-      if(organizationId){
+      if (organizationId) {
         return await ctx.db
-        .query("documents")
-        .withIndex("by_organization_id",(q)=>q.eq("organizationId",organizationId))
-        .order("desc")
-        .paginate(paginationOpts)
+          .query("documents")
+          .withIndex("by_organization_id", (q) =>
+            q.eq("organizationId", organizationId)
+          )
+          .order("desc")
+          .paginate(paginationOpts);
       }
 
       return await ctx.db
@@ -200,6 +203,45 @@ export const renameById = mutation({
     } catch (error) {
       console.error("removeById failed:", error);
       throw new ConvexError("Failed to rename document.");
+    }
+  },
+});
+
+export const getById = query({
+  args: {
+    documentId: v.id("documents"),
+  },
+  handler: async (ctx, { documentId }) => {
+    try {
+      const document = await ctx.db.get(documentId);
+      if (!document) {
+        throw new ConvexError("Document not found");
+      }
+      return document;
+    } catch (error) {
+      console.error("Document not found");
+      toast.error("Document not found");
+    }
+  },
+});
+
+export const getByIds = query({
+  args: { documentIds: v.array(v.id("documents")) },
+  handler: async (ctx, { documentIds }) => {
+    const documents = [];
+    try {
+      for (const id of documentIds) {
+        const document = await ctx.db.get(id);
+        if (document) {
+          documents.push({ id: document._id, name: document.title });
+        } else {
+          documents.push({ id, name: "[Removed]" });
+        }
+      }
+
+      return documents;
+    } catch (error) {
+      console.error("Failed to fetch documents");
     }
   },
 });

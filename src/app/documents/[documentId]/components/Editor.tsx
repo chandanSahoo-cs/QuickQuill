@@ -1,6 +1,6 @@
 "use client";
 
-import {useLiveblocksExtension} from "@liveblocks/react-tiptap"
+import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
@@ -29,11 +29,25 @@ import { HorizontalRuler } from "./HorizontalRuler";
 import { VerticalRuler } from "./VerticalRuler";
 
 import { useEffect, useRef } from "react";
+import { Threads } from "./Threads";
 
-export const Editor = () => {
-  const liveblocks = useLiveblocksExtension();
+import { useStorage } from "@liveblocks/react";
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
+
+interface EditorProps {
+  initialContent?: string | undefined;
+}
+
+export const Editor = ({initialContent}:EditorProps) => {
+  const liveblocks = useLiveblocksExtension({
+    initialContent,
+    offlineSupport_experimental:true,
+  });
   const { setEditor } = useEditorStore();
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const leftMargin = useStorage(root=>root.leftMargin)
+  const rightMargin = useStorage(root=>root.rightMargin)
 
   const editor = useEditor({
     extensions: [
@@ -46,7 +60,9 @@ export const Editor = () => {
       PageBreakExtension,
 
       // Core Extensions
-      StarterKit,
+      StarterKit.configure({
+        history: false,
+      }),
       TaskItem.configure({ nested: true }),
       TaskList,
       Table,
@@ -71,7 +87,7 @@ export const Editor = () => {
     ],
     editorProps: {
       attributes: {
-        style: "padding: 56px;",
+        style: `padding-left: ${leftMargin ?? LEFT_MARGIN_DEFAULT}px; padding-right:${rightMargin ?? RIGHT_MARGIN_DEFAULT}px`,
         class:
           "focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text",
       },
@@ -148,7 +164,11 @@ export const Editor = () => {
       const block = blocks[index];
       const pos = editor?.view.posAtDOM(block, 0);
       if (typeof pos === "number" && !isNaN(pos)) {
-        editor?.chain().focus().insertContentAt(pos, { type: "pageBreak" }).run();
+        editor
+          ?.chain()
+          .focus()
+          .insertContentAt(pos, { type: "pageBreak" })
+          .run();
       } else {
         console.warn("Could not insert page break for block at index", index);
       }
@@ -159,14 +179,14 @@ export const Editor = () => {
     <div className="size-full overflow-x-auto bg-[#F9FBFD] py-2">
       <HorizontalRuler />
       <div className="relative">
-        <div className="absolute left-0 top-0 px-4">
+        {/* <div className="absolute left-0 top-0 px-4">
           <VerticalRuler />
-        </div>
+        </div> */}
         <div
           className="flex justify-center py-4 w-full mx-auto editor-wrapper"
-          ref={wrapperRef}
-        >
+          ref={wrapperRef}>
           <EditorContent editor={editor} />
+          <Threads editor={editor}/>
         </div>
       </div>
     </div>
