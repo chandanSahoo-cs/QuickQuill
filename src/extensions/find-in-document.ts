@@ -59,7 +59,7 @@ export const FindInDocumentExtension = Extension.create({
         key: new PluginKey("find-in-document"),
         state: {
           init: () => DecorationSet.empty,
-          apply: (tr, old) => {
+          apply: (tr) => {
             const { searchTerm, currentMatchIndex = -1 } = this.options;
 
             const flags = this.options.caseSensitive ? "g" : "gi";

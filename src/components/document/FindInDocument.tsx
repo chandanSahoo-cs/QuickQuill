@@ -37,7 +37,7 @@ export function FindInDocument() {
   }, [editor, searchTerm]);
 
   useEffect(() => {
-    const updateListener = editor?.on("update", () => {
+    editor?.on("update", () => {
       if (searchTerm.trim() !== "") {
         updateMatches(searchTerm);
       }
@@ -50,7 +50,7 @@ export function FindInDocument() {
     setReplaceTerm("");
     setMatches([]);
     setCurrentMatchIndex(0);
-    editor?.commands.clearSearch(); // handled by your extension
+    editor?.commands.clearSearch(); 
   };
 
   const findMatches = (term: string) => {
