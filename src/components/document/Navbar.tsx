@@ -23,6 +23,7 @@ import {
   FileCodeIcon,
   FileIcon,
   FilePlusIcon,
+  FileSearchIcon,
   FileTextIcon,
   GlobeIcon,
   ItalicIcon,
@@ -120,6 +121,16 @@ export const Navbar = ({ data }: NavbarProps) => {
     onDownload(blob, `${data.title}.txt`);
   };
 
+  const onFileSearch = () => {
+    const event = new KeyboardEvent("keydown", {
+      key: "f",
+      code: "KeyF",
+      ctrlKey: true,
+      bubbles: true,
+    });
+    window.dispatchEvent(event);
+  };
+
   //TODO: Add for pdf
 
   return (
@@ -165,6 +176,10 @@ export const Navbar = ({ data }: NavbarProps) => {
                     <FilePlusIcon className="size-4 mr-2" />
                     New Document
                   </MenubarItem>
+                  <MenubarItem onClick={() => onFileSearch()}>
+                    <FileSearchIcon className="size-4 mr-2" />
+                    Find In Document
+                  </MenubarItem>
                   <MenubarSeparator />
                   <RenameDialog documentId={data._id} initialTitle={data.title}>
                     <MenubarItem
@@ -187,7 +202,7 @@ export const Navbar = ({ data }: NavbarProps) => {
                   <MenubarSeparator />
                   <MenubarItem onClick={() => window.print()}>
                     <PrinterIcon className="size-4 mr-2" />
-                    Print <MenubarShortcut>⌘ P</MenubarShortcut>
+                    Print
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>

@@ -355,3 +355,17 @@ body {
 div[data-radix-popper-content-wrapper]{
   z-index:50 !important
 }
+
+/*Find in document*/
+.search-highlight {
+  background-color: #fffb8f;         
+  color: black;                     
+  border-radius: 2px;
+  padding: 0 1px;
+  box-shadow: 0 0 0 1px rgba(38, 79, 120, 0.6);
+}
+
+.search-highlight.active {
+  background-color: #ffab40; /* or #ff9800 for orange focus */
+  box-shadow: 0 0 0 2px #ffa72699;
+}

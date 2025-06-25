@@ -1,11 +1,21 @@
 "use client";
 
+//Live Block Extension
 import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 
+// Custom Extension
+import { FindInDocumentExtension } from "@/extensions/find-in-document";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
-import { PageBreakExtension } from "@/extensions/page-break";
+import {
+  PaginationPlus,
+  TableCellPlus,
+  TableHeaderPlus,
+  TablePlus,
+  TableRowPlus,
+} from "tiptap-pagination-plus";
 
+//Inbuilt Extension
 import { Color } from "@tiptap/extension-color";
 import FontFamily from "@tiptap/extension-font-family";
 import Highlight from "@tiptap/extension-highlight";
@@ -30,8 +40,9 @@ import { useRef } from "react";
 import { Threads } from "./Threads";
 
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
-import { useStorage } from "@liveblocks/react";
 import { useEditorStore } from "@/store/useEditorStore";
+import { useStorage } from "@liveblocks/react";
+import { FindInDocument } from "./FindInDocument";
 
 interface EditorProps {
   initialContent?: string | undefined;
@@ -57,7 +68,14 @@ export const Editor = ({ initialContent }: EditorProps) => {
       // Custom Extensions
       FontSizeExtension,
       LineHeightExtension,
-      PageBreakExtension,
+      FindInDocumentExtension.configure({
+        searchTerm: "",
+      }),
+      // TablePlus,
+      // TableRowPlus,
+      // TableCellPlus,
+      // TableHeaderPlus,
+      // PaginationPlus,
 
       // Core Extensions
       StarterKit.configure({
@@ -118,16 +136,12 @@ export const Editor = ({ initialContent }: EditorProps) => {
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] py-2">
       <HorizontalRuler />
-      <div className="relative">
-        {/* <div className="absolute left-0 top-0 px-4">
-          <VerticalRuler />
-        </div> */}
-        <div
-          className="flex justify-center py-4 w-full mx-auto editor-wrapper"
-          ref={wrapperRef}>
-          <EditorContent editor={editor} />
-          <Threads editor={editor} />
-        </div>
+      <div
+        className="flex justify-center py-4 w-full mx-auto editor-wrapper"
+        ref={wrapperRef}>
+        <FindInDocument />
+        <EditorContent editor={editor} />
+        <Threads editor={editor} />
       </div>
     </div>
   );
