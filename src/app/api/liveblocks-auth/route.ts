@@ -1,15 +1,13 @@
+import CustomClaims from "@/types/custom-claims";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { Liveblocks } from "@liveblocks/node";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
-import CustomClaims from "@/types/CustomClaims";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const liveblocks = new Liveblocks({
   secret: process.env.LIVEBLOCKS_SECRET_KEY!,
 });
-
-
 
 export async function POST(req: Request) {
   const { sessionClaims } = await auth();
@@ -32,7 +30,9 @@ export async function POST(req: Request) {
   }
 
   const isOwner = document.ownerId === user.id;
-  const isOrganizationMember = document.organizationId && document.organizationId === (sessionClaims as CustomClaims).o?.id;
+  const isOrganizationMember =
+    document.organizationId &&
+    document.organizationId === (sessionClaims as CustomClaims).o?.id;
 
   if (!isOwner && !isOrganizationMember) {
     return new Response("Unauthorized", { status: 401 });
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     userInfo: {
       name,
       avatar: user.imageUrl,
-      color
+      color,
     },
   });
   session.allow(room, session.FULL_ACCESS);

@@ -5,7 +5,6 @@ import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
 import { PageBreakExtension } from "@/extensions/page-break";
-import { useEditorStore } from "@/store/useEditorStore";
 
 import { Color } from "@tiptap/extension-color";
 import FontFamily from "@tiptap/extension-font-family";
@@ -32,6 +31,7 @@ import { Threads } from "./Threads";
 
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
 import { useStorage } from "@liveblocks/react";
+import { useEditorStore } from "@/store/useEditorStore";
 
 interface EditorProps {
   initialContent?: string | undefined;
@@ -49,7 +49,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
   const rightMargin = useStorage((root) => root.rightMargin);
 
   const editor = useEditor({
-    autofocus:true,
+    autofocus: true,
     extensions: [
       // Liveblock Extension
       liveblocks,

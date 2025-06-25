@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { ConvexClientProvider } from "@/components/ConvexClientProvider";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import "./globals.css";
-import { Toaster } from "sonner";
-import "@liveblocks/react-ui/styles.css";
+import { ConvexClientProvider } from "@/components/clerk/ConvexClientProvider";
 import "@liveblocks/react-tiptap/styles.css";
+import "@liveblocks/react-ui/styles.css";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,8 +31,13 @@ export default function RootLayout({
         <NuqsAdapter>
           <ConvexClientProvider>
             {children}
-             <Toaster position="top-right" duration={3000} richColors closeButton />
-            </ConvexClientProvider>
+            <Toaster
+              position="top-right"
+              duration={3000}
+              richColors
+              closeButton
+            />
+          </ConvexClientProvider>
         </NuqsAdapter>
       </body>
     </html>

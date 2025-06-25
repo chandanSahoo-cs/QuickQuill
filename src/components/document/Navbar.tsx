@@ -16,8 +16,6 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import { useEditorStore } from "@/store/useEditorStore";
-// import html2pdf from "html2pdf";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import {
@@ -40,15 +38,15 @@ import {
 import { useRouter } from "next/navigation";
 import { BsFilePdf } from "react-icons/bs";
 import { toast } from "sonner";
-import { api } from "../../../../../convex/_generated/api";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
 import { Avatars } from "./Avatar";
 import { Inbox } from "./Inbox";
-import { DocumentInput } from "./navbar-components/DocumentInput";
-import { TableMenu } from "./navbar-components/TableMenu";
 
 import { RemoveDialog } from "@/components/RemoveDialog";
 import { RenameDialog } from "@/components/RenameDialog";
+import { DocumentInput, TableMenu } from "@/components/document";
+import { useEditorStore } from "@/store/useEditorStore";
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -176,7 +174,9 @@ export const Navbar = ({ data }: NavbarProps) => {
                       Rename
                     </MenubarItem>
                   </RenameDialog>
-                  <RemoveDialog documentId={data._id} onClick={()=>router.push("/")}>
+                  <RemoveDialog
+                    documentId={data._id}
+                    onClick={() => router.push("/")}>
                     <MenubarItem
                       onClick={(e) => e.stopPropagation()}
                       onSelect={(e) => e.preventDefault()}>

@@ -1,11 +1,11 @@
 "use server";
 
+import CustomClaims from "@/types/custom-claims";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { toast } from "sonner";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import CustomClaims from "@/types/CustomClaims";
 
 // const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!)
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -33,7 +33,7 @@ export async function getUser() {
       name:
         user.fullName ?? user.primaryEmailAddress?.emailAddress ?? "Anonymous",
       avatar: user.imageUrl,
-      color:""
+      color: "",
     }));
 
     return users;

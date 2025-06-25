@@ -2,7 +2,6 @@
 
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useEditorStore } from "@/store/useEditorStore";
 import {
   BoldIcon,
   ItalicIcon,
@@ -26,8 +25,9 @@ import {
   LinkButton,
   ListButton,
   TextColorButton,
-} from "./toolbar-components";
-import { HighlightButton } from "./toolbar-components/HighlightButton";
+  HighlightButton
+} from "@/components/toolbar";
+import { useEditorStore } from "@/store/useEditorStore";
 
 interface ToolbarButtonProps {
   onClick?: () => void;
@@ -118,8 +118,8 @@ export const Toolbar = () => {
       {
         label: "Comment",
         icon: MessageSquarePlusIcon,
-        onClick: () => (editor?.chain().focus().addPendingComment().run()),
-        isActive: editor?.isActive("liveblockCommentMark")
+        onClick: () => editor?.chain().focus().addPendingComment().run(),
+        isActive: editor?.isActive("liveblockCommentMark"),
       },
       {
         label: "Check List",

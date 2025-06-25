@@ -7,6 +7,7 @@ import { LineHeightButton } from "./LineHeightButton";
 import { LinkButton } from "./LinkButton";
 import { ListButton } from "./ListButton";
 import { TextColorButton } from "./TextColorButton";
+import { HighlightButton } from "./HighlightButton";
 
 export {
   AlignButton,
@@ -18,4 +19,5 @@ export {
   LinkButton,
   ListButton,
   TextColorButton,
+  HighlightButton,
 };

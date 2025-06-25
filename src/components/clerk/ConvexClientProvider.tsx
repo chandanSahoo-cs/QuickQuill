@@ -9,8 +9,8 @@ import {
 } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ReactNode } from "react";
-import { AuthLayout } from "./clerk/AuthLayout";
-import { FullScreenLoader } from "./FullScreenLoader";
+import { FullScreenLoader } from "../FullScreenLoader";
+import { AuthLayout } from "./AuthLayout";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -24,7 +24,7 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
           <AuthLayout />
         </Unauthenticated>
         <AuthLoading>
-          <FullScreenLoader/>
+          <FullScreenLoader />
         </AuthLoading>
       </ConvexProviderWithClerk>
     </ClerkProvider>

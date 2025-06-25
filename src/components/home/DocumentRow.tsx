@@ -3,8 +3,8 @@ import { Doc } from "../../../convex/_generated/dataModel";
 import {SiGoogledocs} from "react-icons/si"
 import { Building2Icon, CircleUserIcon} from "lucide-react";
 import {format} from "date-fns"
-import { DocumentMenu } from "./DocumentMenu";
 import { useRouter } from "next/navigation";
+import { DocumentMenu } from "./DocumentMenu";
 
 
 interface DocumentRowProps {
