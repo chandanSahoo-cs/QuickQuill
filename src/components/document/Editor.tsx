@@ -12,11 +12,14 @@ import {
 import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 
 // Custom Extension
+import { CalloutExtension } from "@/extensions/callout";
 import { FindInDocumentExtension } from "@/extensions/find-in-document";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
 
 //Inbuilt Extension
+import Blockquote from "@tiptap/extension-blockquote";
+import Code from "@tiptap/extension-code";
 import { Color } from "@tiptap/extension-color";
 import FontFamily from "@tiptap/extension-font-family";
 import Highlight from "@tiptap/extension-highlight";
@@ -43,7 +46,23 @@ import { Threads } from "./Threads";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
 import { useEditorStore } from "@/store/useEditorStore";
 import { useStorage } from "@liveblocks/react";
-import { ClipboardListIcon, Code2Icon, Heading1Icon, Heading2Icon, Heading3Icon, ImageIcon, ListIcon, ListOrderedIcon, MinusIcon, StickyNoteIcon, TextIcon, TextQuoteIcon } from "lucide-react";
+import {
+  ClipboardListIcon,
+  Code2Icon,
+  FileCheckIcon,
+  FileWarningIcon,
+  FileXIcon,
+  Heading1Icon,
+  Heading2Icon,
+  Heading3Icon,
+  ImageIcon,
+  ListIcon,
+  ListOrderedIcon,
+  MinusIcon,
+  StickyNoteIcon,
+  TextIcon,
+  TextQuoteIcon,
+} from "lucide-react";
 import { FindInDocument } from "./FindInDocument";
 
 interface EditorProps {
@@ -80,7 +99,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Heading 3",
     searchTerms: ["h3", "sub subtitle"],
-    icon: Heading3Icon ,
+    icon: Heading3Icon,
     command: ({ editor, range }) => {
       editor
         .chain()
@@ -101,7 +120,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Blockquote",
     searchTerms: ["quote", "blockquote", "citation"],
-    icon: TextQuoteIcon ,
+    icon: TextQuoteIcon,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleBlockquote().run();
     },
@@ -116,21 +135,40 @@ const suggestions = createSuggestionsItems([
   },
   {
     title: "Callout",
-    searchTerms: ["note", "callout", "info"],
-    icon: StickyNoteIcon ,
+    searchTerms: ["note", "callout", "Info"],
+    icon: StickyNoteIcon,
     command: ({ editor, range }) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .insertContent(`<div data-type='callout'>💡 Callout</div>`)
-        .run();
+      editor.chain().focus().deleteRange(range).toggleCallout("info").run();
+    },
+  },
+  {
+    title: "Success",
+    searchTerms: ["note", "callout", "info"],
+    icon: FileCheckIcon,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleCallout("success").run();
+    },
+  },
+  {
+    title: "Warning",
+    searchTerms: ["note", "callout", "warning"],
+    icon: FileWarningIcon,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleCallout("warning").run();
+    },
+  },
+  {
+    title: "Error",
+    searchTerms: ["note", "callout", "info"],
+    icon: FileXIcon,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleCallout("error").run();
     },
   },
   {
     title: "Bullet List",
     searchTerms: ["unordered", "point", "list"],
-    icon: ListIcon ,
+    icon: ListIcon,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleBulletList().run();
     },
@@ -138,7 +176,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Ordered List",
     searchTerms: ["ordered", "numbered", "list"],
-    icon: ListOrderedIcon ,
+    icon: ListOrderedIcon,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleOrderedList().run();
     },
@@ -146,7 +184,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Task List",
     searchTerms: ["checkbox", "todo", "task"],
-    icon: ClipboardListIcon ,
+    icon: ClipboardListIcon,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleTaskList().run();
     },
@@ -154,7 +192,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Code Block",
     searchTerms: ["code", "snippet", "block"],
-    icon: Code2Icon ,
+    icon: Code2Icon,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
     },
@@ -162,7 +200,7 @@ const suggestions = createSuggestionsItems([
   {
     title: "Image",
     searchTerms: ["picture", "media", "img"],
-    icon: ImageIcon ,
+    icon: ImageIcon,
     command: ({ editor, range }) => {
       const url = window.prompt("Enter image URL");
       if (url) {
@@ -200,6 +238,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
           items: () => suggestions,
         },
       }),
+      CalloutExtension,
 
       // Core Extensions
       StarterKit.configure({
@@ -226,6 +265,8 @@ export const Editor = ({ initialContent }: EditorProps) => {
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
+      Code,
+      Blockquote,
     ],
     editorProps: {
       handleDOMEvents: {
@@ -270,36 +311,28 @@ export const Editor = ({ initialContent }: EditorProps) => {
         <SlashCmdProvider>
           <EditorContent editor={editor} />
           <SlashCmd.Root editor={editor}>
-            <SlashCmd.Cmd>
-              <SlashCmd.List>
-                {suggestions.map(({title,icon:Icon,command}) => {
-
-                  return (
-                    <SlashCmd.Item
-                      value={title}
-                      onCommand={(val) => {
-                        command(val);
-                      }}
-                      className="flex w-full items-center space-x-3 cursor-pointer rounded-lg px-3 py-2.5 text-left hover:bg-slate-50 aria-selected:bg-slate-100 transition-colors duration-150"
-                      key={title}>
-                      <div className="flex items-center space-x-3 w-full">
-                        <div className="flex-shrink-0 flex items-center justify-center">
-                          <Icon className="size-4 mr-4 text-slate-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm text-slate-900 leading-tight">
-                            {title}
-                          </p>
-                          {/* {item.description && (
-                            <p className="text-xs text-slate-500 mt-0.5 leading-tight">
-                              {item.description}
-                            </p>
-                          )} */}
-                        </div>
+            <SlashCmd.Cmd className="bg-[#f7f7f7] rounded-lg p-1">
+              <SlashCmd.List className="max-h-96  overflow-y-auto custom-scroll">
+                {suggestions.map(({ title, icon: Icon, command }) => (
+                  <SlashCmd.Item
+                    value={title}
+                    onCommand={(val) => {
+                      command(val);
+                    }}
+                    className="flex w-full items-center space-x-3 cursor-pointer rounded-lg px-3 py-2.5 text-left hover:bg-slate-200 aria-selected:bg-slate-200 transition-colors duration-150"
+                    key={title}>
+                    <div className="flex items-center space-x-3 w-full">
+                      <div className="flex-shrink-0 flex items-center justify-center">
+                        <Icon className="size-4 mr-4 text-slate-600" />
                       </div>
-                    </SlashCmd.Item>
-                  );
-                })}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-slate-900 leading-tight">
+                          {title}
+                        </p>
+                      </div>
+                    </div>
+                  </SlashCmd.Item>
+                ))}
               </SlashCmd.List>
             </SlashCmd.Cmd>
           </SlashCmd.Root>

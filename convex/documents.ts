@@ -1,6 +1,5 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { toast } from "sonner";
 import { mutation, query } from "./_generated/server";
 
 export const create = mutation({
@@ -185,7 +184,7 @@ export const renameById = mutation({
 
     if (document.ownerId !== user.subject) {
       throw new ConvexError(
-        "You do not have permission to delete this document."
+        "You do not have permission to rename this document."
       );
     }
 
@@ -220,7 +219,6 @@ export const getById = query({
       return document;
     } catch (error) {
       console.error("Document not found");
-      toast.error("Document not found");
     }
   },
 });
