@@ -64,7 +64,7 @@ export const Navbar = ({ data }: NavbarProps) => {
       title: "Untitled Document",
       initialContent: "",
     })
-      .catch(()=>toast.error("Something went wrong"))
+      .catch(() => toast.error("Something went wrong"))
       .then((id) => {
         toast.success("Document created");
         router.push(`/documents/${id}`);
@@ -131,7 +131,32 @@ export const Navbar = ({ data }: NavbarProps) => {
     window.dispatchEvent(event);
   };
 
-  //TODO: Add for pdf
+  const onSavePdf = () => {
+    (async () => {
+      if (!editor) return;
+
+      const html = editor.getHTML(); // or prepare custom full HTML
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullHtml: html }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to generate PDF");
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = data.title;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    })();
+  };
 
   return (
     <nav className="flex items-center justify-between">
@@ -162,7 +187,7 @@ export const Navbar = ({ data }: NavbarProps) => {
                         <GlobeIcon className="size-4 mr-2" />
                         HTML
                       </MenubarItem>
-                      <MenubarItem onClick={() => window.print()}>
+                      <MenubarItem onClick={() => onSavePdf()}>
                         <BsFilePdf className="size-4 mr-2" />
                         PDF
                       </MenubarItem>

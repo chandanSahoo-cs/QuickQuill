@@ -64,6 +64,7 @@ import {
   TextQuoteIcon,
 } from "lucide-react";
 import { FindInDocument } from "./FindInDocument";
+import { PAGE_HEIGHT, PAGE_WIDTH } from "@/constants/pageSize";
 
 interface EditorProps {
   initialContent?: string | undefined;
@@ -197,17 +198,6 @@ const suggestions = createSuggestionsItems([
       editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
     },
   },
-  {
-    title: "Image",
-    searchTerms: ["picture", "media", "img"],
-    icon: ImageIcon,
-    command: ({ editor, range }) => {
-      const url = window.prompt("Enter image URL");
-      if (url) {
-        editor.chain().focus().deleteRange(range).setImage({ src: url }).run();
-      }
-    },
-  },
 ]);
 
 export const Editor = ({ initialContent }: EditorProps) => {
@@ -275,7 +265,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
       attributes: {
         style: `padding-left: ${leftMargin ?? LEFT_MARGIN_DEFAULT}px; padding-right:${rightMargin ?? RIGHT_MARGIN_DEFAULT}px`,
         class:
-          "focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text",
+          `focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text`,
       },
     },
     onCreate({ editor }) {

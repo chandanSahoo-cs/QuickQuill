@@ -37,7 +37,6 @@ export const create = mutation({
         throw new ConvexError("Failed to create the document");
       }
 
-      // TODO: Add admins
       const firstCommit = await ctx.db.insert("commits", {
         documentId: docId,
         parentCommitId: undefined,

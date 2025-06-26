@@ -14,7 +14,6 @@ const Home = () => {
     {search},
     { initialNumItems: 5 }
   );
-  //TODO: Add debouncing
   const {isLoading} = useLoadingStore();
   return (
     isLoading ? <FullScreenLoader/> :

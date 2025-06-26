@@ -38,7 +38,6 @@ export async function getUser() {
     return users;
   } catch (error) {
     console.error(error);
-    toast.error("Failed to fetch user details");
   }
 }
 
