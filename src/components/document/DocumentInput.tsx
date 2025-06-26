@@ -2,13 +2,14 @@
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { useStatus } from "@liveblocks/react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { LoaderIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { BsCloudCheck, BsCloudSlash } from "react-icons/bs";
 import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
 interface DocumentInputProp {
   title: string;
   id: Id<"documents">;
@@ -23,6 +24,16 @@ export const DocumentInput = ({ title, id }: DocumentInputProp) => {
   const status = useStatus();
 
   const mutate = useMutation(api.documents.renameById);
+
+  const getById = useQuery(api.documents.getById, {
+    documentId: id,
+  });
+
+  const {user} = useUser();
+
+  const owner = getById?.ownerId === user?.id;
+  console.log("getbyId",getById?._id)
+  console.log("user", user)
 
   const debouncedUpdate = useDebounce((newValue: string) => {
     if (newValue === title) return;
@@ -58,10 +69,10 @@ export const DocumentInput = ({ title, id }: DocumentInputProp) => {
   const showLoader =
     isPending || status === "connecting" || status === "reconnecting";
   const showError = status === "disconnected";
-
+  console.log("docuemnt input",owner);
   return (
     <div className="flex items-center gap-2">
-      {isEditing ? (
+      {isEditing && owner ? (
         <form onSubmit={handleSubmit} className="relative w-fit max-w[50ch]">
           <span className="invisible whitespace-pre px-1.5 text-lg">
             {value || " "}

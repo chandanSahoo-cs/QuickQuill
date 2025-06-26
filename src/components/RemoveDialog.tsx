@@ -11,11 +11,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
 interface RemoveDialogProps {
   documentId: Id<"documents">;
   children: React.ReactNode;
@@ -32,6 +33,12 @@ export const RemoveDialog = ({
   if (!onClick) {
     onClick = () => {};
   }
+  const {user} = useUser();
+  const getById = useQuery(api.documents.getById,{
+    documentId
+  })
+
+  const owner = user?.id===getById?.ownerId;
 
   return (
     <AlertDialog>
@@ -52,13 +59,17 @@ export const RemoveDialog = ({
             disabled={isRemoving}
             onClick={(e) => {
               e.stopPropagation();
+              if(!owner){
+                toast.warning("You don't have permission to delete the document")
+                return
+              }
               setIsRemoving(true);
               onClick();
               remove({ documentId })
                 .then(() => {
                   toast.success("Document Removed");
                 })
-                .catch(() => toast.error("Something went wrong"))
+                .catch(()=>toast.error("Something went wrong"))
                 .finally(() => setIsRemoving(false));
             }}>
             Delete

@@ -9,13 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+
+import { useUser } from "@clerk/nextjs";
 
 interface RenameDialogProps {
   documentId: Id<"documents">;
@@ -29,18 +31,26 @@ export const RenameDialog = ({
   initialTitle,
 }: RenameDialogProps) => {
   const update = useMutation(api.documents.renameById);
+  const getById = useQuery(api.documents.getById, {
+    documentId,
+  });
   const [isUpdating, setIsUpdating] = useState(false);
   const [title, setTitle] = useState(initialTitle);
   const [open, setIsOpen] = useState(false);
-
+  const { user} = useUser();
+  const owner = user?.id === getById?.ownerId;
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!owner) {
+      toast.warning("You don't have permission to rename the document");
+      setIsUpdating(false);
+      setIsOpen(false);
+      return;
+    }
     setIsUpdating(true);
-    // const trimmedTitle = title.trim();
-    //TODO : Check for empty title
     update({ documentId, title: title.trim() || "Untitled" })
       .then(() => toast.success("Document updated"))
-      .catch(() => toast.error("Something went wrong"))
+      .catch(()=>toast.error("Something went wrong"))
       .finally(() => {
         setIsUpdating(false);
         setIsOpen(false);

@@ -54,7 +54,7 @@ const Avatar = ({ src, name }: AvatarProps) => {
       <div className="opacity-0 group-hover:opacity-100 absolute top-full py-1 px-2 text-white text-xs mt-2.5 z-10 bg-black whitespace-nowrap transition-opacity rounded-sm">
         {name}
       </div>
-      <Image alt={name} src={src} className="size-full rounded-full" />
+      <img alt={name} src={src} className="size-full rounded-full" />
     </div>
   );
 };
