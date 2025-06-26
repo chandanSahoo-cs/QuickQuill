@@ -16,7 +16,6 @@ export async function getDocuments(ids: Id<"documents">[]) {
 
 export async function getUser() {
   try {
-    console.log("Hello");
     const { sessionClaims } = await auth();
     const clerk = await clerkClient();
 
@@ -42,3 +41,4 @@ export async function getUser() {
     toast.error("Failed to fetch user details");
   }
 }
+
