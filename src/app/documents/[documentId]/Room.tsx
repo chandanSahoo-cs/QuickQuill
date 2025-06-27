@@ -1,6 +1,7 @@
 "use client";
 
 import { FullScreenLoader } from "@/components/FullScreenLoader";
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
 import {
   ClientSideSuspense,
   LiveblocksProvider,
@@ -8,12 +9,10 @@ import {
 } from "@liveblocks/react/suspense";
 import { useParams } from "next/navigation";
 import { ReactNode, useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { getDocuments, getUser } from "./action";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
+import { getDocuments, getUser } from "./action";
 
-type User = { id: string; name: string; avatar: string; color:string};
+type User = { id: string; name: string; avatar: string; color: string };
 
 export function Room({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
@@ -63,14 +62,19 @@ export function Room({ children }: { children: ReactNode }) {
 
         return filteredUser.map((user) => user.id);
       }}
-      resolveRoomsInfo={async({roomIds}) =>{
+      resolveRoomsInfo={async ({ roomIds }) => {
         const documents = await getDocuments(roomIds as Id<"documents">[]);
-        return documents?.map((document)=>({
+        return documents?.map((document) => ({
           id: document.id,
           name: document.name,
-        }))
+        }));
       }}>
-      <RoomProvider id={params.documentId as string} initialStorage={{leftMargin:LEFT_MARGIN_DEFAULT, rightMargin:RIGHT_MARGIN_DEFAULT}}>
+      <RoomProvider
+        id={params.documentId as string}
+        initialStorage={{
+          leftMargin: LEFT_MARGIN_DEFAULT,
+          rightMargin: RIGHT_MARGIN_DEFAULT,
+        }}>
         <ClientSideSuspense fallback={<FullScreenLoader />}>
           {children}
         </ClientSideSuspense>

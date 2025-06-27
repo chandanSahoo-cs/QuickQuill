@@ -1,17 +1,13 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { useEditorStore } from "@/store/useEditorStore";
-import { ChevronDownIcon } from "lucide-react";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils"
+import { useEditorStore } from "@/store/useEditorStore"
+import { ChevronDownIcon } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { motion } from "framer-motion"
 
 export const FontFamilyButton = () => {
-  const { editor } = useEditorStore();
+  const { editor } = useEditorStore()
 
   const fonts = [
     { label: "Arial", value: "Arial" },
@@ -35,36 +31,40 @@ export const FontFamilyButton = () => {
     { label: "Franklin Gothic Medium", value: "Franklin Gothic Medium" },
     { label: "Century Gothic", value: "Century Gothic" },
     { label: "Lucida Sans Unicode", value: "Lucida Sans Unicode" },
-  ];
+  ]
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm">
-          <span className="truncate">
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          className="h-8 w-32 shrink-0 flex items-center justify-between rounded-lg hover:bg-slate-100 px-3 transition-colors duration-200 text-slate-700 border border-slate-200 bg-white"
+        >
+          <span className="truncate text-sm font-medium">
             {editor?.getAttributes("textStyle").fontFamily || "Arial"}
           </span>
-          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
-        </button>
+          <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 text-slate-400" />
+        </motion.button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
-        {fonts.map(({ label, value }) => (
-          <button
-            onClick={() => editor?.chain().focus().setFontFamily(value).run()}
-            key={value}
-            className={cn(
-              "flex items-center gap-x-2 px-3 py-1 rounded-sm hover:bg-neutral-200/80",
-              !editor?.getAttributes("textStyle").fontFamily &&
-                value == "Arial" &&
-                "bg-neutral-200/80",
-              editor?.getAttributes("textStyle").fontFamily === value &&
-                "bg-neutral-200/80"
-            )}
-            style={{ fontFamily: value }}>
-            <span className="text-sm">{label}</span>
-          </button>
-        ))}
+      <DropdownMenuContent className="p-2 bg-white/95 backdrop-blur-sm border-slate-200 shadow-lg rounded-xl max-h-64 overflow-y-auto">
+        <div className="space-y-1">
+          {fonts.map(({ label, value }) => (
+            <motion.button
+              key={value}
+              whileHover={{ scale: 1.01 }}
+              onClick={() => editor?.chain().focus().setFontFamily(value).run()}
+              className={cn(
+                "flex items-center px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors duration-200 w-full text-left",
+                !editor?.getAttributes("textStyle").fontFamily && value === "Arial" && "bg-violet-50 text-violet-700",
+                editor?.getAttributes("textStyle").fontFamily === value && "bg-violet-50 text-violet-700",
+              )}
+              style={{ fontFamily: value }}
+            >
+              <span className="text-sm">{label}</span>
+            </motion.button>
+          ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}

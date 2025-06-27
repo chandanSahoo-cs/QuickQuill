@@ -48,6 +48,7 @@ import { RemoveDialog } from "@/components/RemoveDialog";
 import { RenameDialog } from "@/components/RenameDialog";
 import { DocumentInput, TableMenu } from "@/components/document";
 import { useEditorStore } from "@/store/useEditorStore";
+import { motion } from "framer-motion";
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -161,9 +162,11 @@ export const Navbar = ({ data }: NavbarProps) => {
   return (
     <nav className="flex items-center justify-between">
       <div className="flex gap-2 items-center">
-        <Link href="/">
-          <Image src="/logo.svg" alt="Logo" width={50} height={36}></Image>
-        </Link>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Link href="/">
+            <Image src="/logo.svg" alt="Logo" width={40} height={32} />
+          </Link>
+        </motion.div>
         <div className="flex flex-col">
           <DocumentInput title={data.title} id={data._id} />
           <div className="flex">

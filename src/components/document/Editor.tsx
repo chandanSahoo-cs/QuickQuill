@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   createSuggestionsItems,
@@ -6,46 +6,46 @@ import {
   Slash,
   SlashCmd,
   SlashCmdProvider,
-} from "@harshtalks/slash-tiptap";
+} from "@harshtalks/slash-tiptap"
 
 //Live Block Extension
-import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
+import { useLiveblocksExtension } from "@liveblocks/react-tiptap"
 
 // Custom Extension
-import { CalloutExtension } from "@/extensions/callout";
-import { FindInDocumentExtension } from "@/extensions/find-in-document";
-import { FontSizeExtension } from "@/extensions/font-size";
-import { LineHeightExtension } from "@/extensions/line-height";
+import { CalloutExtension } from "@/extensions/callout"
+import { FindInDocumentExtension } from "@/extensions/find-in-document"
+import { FontSizeExtension } from "@/extensions/font-size"
+import { LineHeightExtension } from "@/extensions/line-height"
 
 //Inbuilt Extension
-import Blockquote from "@tiptap/extension-blockquote";
-import Code from "@tiptap/extension-code";
-import { Color } from "@tiptap/extension-color";
-import FontFamily from "@tiptap/extension-font-family";
-import Highlight from "@tiptap/extension-highlight";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Table from "@tiptap/extension-table";
-import TableCell from "@tiptap/extension-table-cell";
-import TableHeader from "@tiptap/extension-table-header";
-import TableRow from "@tiptap/extension-table-row";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-import TextAlign from "@tiptap/extension-text-align";
-import TextStyle from "@tiptap/extension-text-style";
-import Underline from "@tiptap/extension-underline";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import ImageResize from "tiptap-extension-resize-image";
+import Blockquote from "@tiptap/extension-blockquote"
+import Code from "@tiptap/extension-code"
+import { Color } from "@tiptap/extension-color"
+import FontFamily from "@tiptap/extension-font-family"
+import Highlight from "@tiptap/extension-highlight"
+import Image from "@tiptap/extension-image"
+import Link from "@tiptap/extension-link"
+import Table from "@tiptap/extension-table"
+import TableCell from "@tiptap/extension-table-cell"
+import TableHeader from "@tiptap/extension-table-header"
+import TableRow from "@tiptap/extension-table-row"
+import TaskItem from "@tiptap/extension-task-item"
+import TaskList from "@tiptap/extension-task-list"
+import TextAlign from "@tiptap/extension-text-align"
+import TextStyle from "@tiptap/extension-text-style"
+import Underline from "@tiptap/extension-underline"
+import { EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import ImageResize from "tiptap-extension-resize-image"
 
-import { HorizontalRuler } from "./HorizontalRuler";
+import { HorizontalRuler } from "./HorizontalRuler"
 
-import { useRef } from "react";
-import { Threads } from "./Threads";
+import { useRef } from "react"
+import { Threads } from "./Threads"
 
-import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin";
-import { useEditorStore } from "@/store/useEditorStore";
-import { useStorage } from "@liveblocks/react";
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margin"
+import { useEditorStore } from "@/store/useEditorStore"
+import { useStorage } from "@liveblocks/react"
 import {
   ClipboardListIcon,
   Code2Icon,
@@ -55,19 +55,18 @@ import {
   Heading1Icon,
   Heading2Icon,
   Heading3Icon,
-  ImageIcon,
   ListIcon,
   ListOrderedIcon,
   MinusIcon,
   StickyNoteIcon,
   TextIcon,
   TextQuoteIcon,
-} from "lucide-react";
-import { FindInDocument } from "./FindInDocument";
-import { PAGE_HEIGHT, PAGE_WIDTH } from "@/constants/pageSize";
+} from "lucide-react"
+import { FindInDocument } from "./FindInDocument"
+import { motion } from "framer-motion"
 
 interface EditorProps {
-  initialContent?: string | undefined;
+  initialContent?: string | undefined
 }
 
 const suggestions = createSuggestionsItems([
@@ -76,12 +75,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["h1", "large title"],
     icon: Heading1Icon,
     command: ({ editor, range }) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .setNode("heading", { level: 1 })
-        .run();
+      editor.chain().focus().deleteRange(range).setNode("heading", { level: 1 }).run()
     },
   },
   {
@@ -89,12 +83,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["h2", "subtitle"],
     icon: Heading2Icon,
     command: ({ editor, range }) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .setNode("heading", { level: 2 })
-        .run();
+      editor.chain().focus().deleteRange(range).setNode("heading", { level: 2 }).run()
     },
   },
   {
@@ -102,12 +91,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["h3", "sub subtitle"],
     icon: Heading3Icon,
     command: ({ editor, range }) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .setNode("heading", { level: 3 })
-        .run();
+      editor.chain().focus().deleteRange(range).setNode("heading", { level: 3 }).run()
     },
   },
   {
@@ -115,7 +99,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["text", "body", "normal"],
     icon: TextIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).setNode("paragraph").run();
+      editor.chain().focus().deleteRange(range).setNode("paragraph").run()
     },
   },
   {
@@ -123,7 +107,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["quote", "blockquote", "citation"],
     icon: TextQuoteIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+      editor.chain().focus().deleteRange(range).toggleBlockquote().run()
     },
   },
   {
@@ -131,7 +115,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["hr", "line", "divider"],
     icon: MinusIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+      editor.chain().focus().deleteRange(range).setHorizontalRule().run()
     },
   },
   {
@@ -139,7 +123,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["note", "callout", "Info"],
     icon: StickyNoteIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleCallout("info").run();
+      editor.chain().focus().deleteRange(range).toggleCallout("info").run()
     },
   },
   {
@@ -147,7 +131,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["note", "callout", "info"],
     icon: FileCheckIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleCallout("success").run();
+      editor.chain().focus().deleteRange(range).toggleCallout("success").run()
     },
   },
   {
@@ -155,7 +139,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["note", "callout", "warning"],
     icon: FileWarningIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleCallout("warning").run();
+      editor.chain().focus().deleteRange(range).toggleCallout("warning").run()
     },
   },
   {
@@ -163,7 +147,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["note", "callout", "info"],
     icon: FileXIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleCallout("error").run();
+      editor.chain().focus().deleteRange(range).toggleCallout("error").run()
     },
   },
   {
@@ -171,7 +155,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["unordered", "point", "list"],
     icon: ListIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleBulletList().run();
+      editor.chain().focus().deleteRange(range).toggleBulletList().run()
     },
   },
   {
@@ -179,7 +163,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["ordered", "numbered", "list"],
     icon: ListOrderedIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+      editor.chain().focus().deleteRange(range).toggleOrderedList().run()
     },
   },
   {
@@ -187,7 +171,7 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["checkbox", "todo", "task"],
     icon: ClipboardListIcon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleTaskList().run();
+      editor.chain().focus().deleteRange(range).toggleTaskList().run()
     },
   },
   {
@@ -195,21 +179,21 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["code", "snippet", "block"],
     icon: Code2Icon,
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
+      editor.chain().focus().deleteRange(range).toggleCodeBlock().run()
     },
   },
-]);
+])
 
 export const Editor = ({ initialContent }: EditorProps) => {
   const liveblocks = useLiveblocksExtension({
     initialContent,
     offlineSupport_experimental: true,
-  });
-  const { setEditor } = useEditorStore();
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  })
+  const { setEditor } = useEditorStore()
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const leftMargin = useStorage((root) => root.leftMargin);
-  const rightMargin = useStorage((root) => root.rightMargin);
+  const leftMargin = useStorage((root) => root.leftMargin)
+  const rightMargin = useStorage((root) => root.rightMargin)
 
   const editor = useEditor({
     autofocus: true,
@@ -263,62 +247,66 @@ export const Editor = ({ initialContent }: EditorProps) => {
         keydown: (_, v) => enableKeyboardNavigation(v),
       },
       attributes: {
-        style: `padding-left: ${leftMargin ?? LEFT_MARGIN_DEFAULT}px; padding-right:${rightMargin ?? RIGHT_MARGIN_DEFAULT}px`,
-        class:
-          `focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text`,
+        style: `padding-left: ${leftMargin ?? LEFT_MARGIN_DEFAULT}px; padding-right:${
+          rightMargin ?? RIGHT_MARGIN_DEFAULT
+        }px`,
+        class: `focus:outline-none print:border-0 bg-white border border-slate-200 flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text rounded-lg shadow-sm`,
       },
     },
     onCreate({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onUpdate({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onSelectionUpdate({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onTransaction({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onFocus({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onBlur({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
     onContentError({ editor }) {
-      setEditor(editor);
+      setEditor(editor)
     },
-  });
+  })
 
   return (
-    <div className="size-full overflow-x-auto bg-[#F9FBFD] py-2">
+    <div className="size-full overflow-x-auto bg-gradient-to-br from-slate-50 to-violet-50/30 py-2">
       <HorizontalRuler />
-      <div
-        className="flex justify-center py-4 w-full mx-auto editor-wrapper"
-        ref={wrapperRef}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex justify-center py-6 w-full mx-auto editor-wrapper"
+        ref={wrapperRef}
+      >
         <FindInDocument />
         <SlashCmdProvider>
           <EditorContent editor={editor} />
           <SlashCmd.Root editor={editor}>
-            <SlashCmd.Cmd className="bg-[#f7f7f7] rounded-lg p-1">
-              <SlashCmd.List className="max-h-96  overflow-y-auto custom-scroll">
+            <SlashCmd.Cmd className="bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl rounded-xl p-2">
+              <SlashCmd.List className="max-h-96 overflow-y-auto space-y-1">
                 {suggestions.map(({ title, icon: Icon, command }) => (
                   <SlashCmd.Item
                     value={title}
                     onCommand={(val) => {
-                      command(val);
+                      command(val)
                     }}
-                    className="flex w-full items-center space-x-3 cursor-pointer rounded-lg px-3 py-2.5 text-left hover:bg-slate-200 aria-selected:bg-slate-200 transition-colors duration-150"
-                    key={title}>
+                    className="flex w-full items-center space-x-3 cursor-pointer rounded-lg px-3 py-2.5 text-left hover:bg-slate-50 aria-selected:bg-violet-50 aria-selected:text-violet-700 transition-colors duration-200"
+                    key={title}
+                  >
                     <div className="flex items-center space-x-3 w-full">
                       <div className="flex-shrink-0 flex items-center justify-center">
-                        <Icon className="size-4 mr-4 text-slate-600" />
+                        <Icon className="h-4 w-4 text-slate-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-slate-900 leading-tight">
-                          {title}
-                        </p>
+                        <p className="font-medium text-sm text-slate-700 leading-tight">{title}</p>
                       </div>
                     </div>
                   </SlashCmd.Item>
@@ -328,7 +316,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
           </SlashCmd.Root>
         </SlashCmdProvider>
         <Threads editor={editor} />
-      </div>
+      </motion.div>
     </div>
-  );
-};
+  )
+}
