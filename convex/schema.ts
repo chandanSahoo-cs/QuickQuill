@@ -11,6 +11,7 @@ export default defineSchema({
 
     //VCS-specific
     currentCommitId: v.optional(v.id("commits")),
+    rootCommitId: v.optional(v.id("commits")),
     createdAt: v.string(),
     updatedAt: v.string(),
   })
@@ -26,8 +27,11 @@ export default defineSchema({
     documentId: v.id("documents"),
     parentCommitId: v.optional(v.id("commits")),
     content: v.string(),
-    message: v.optional(v.string()),
+    contentHash: v.string(),
+    name: v.string(),
     authorId: v.string(),
     createdAt: v.string(),
+    updatedAt:v.string(),
+    commitNumber: v.optional(v.number()),
   }).index("by_document_id", ["documentId"]),
 });

@@ -1,7 +1,7 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { toast } from "sonner";
 import { mutation, query } from "./_generated/server";
+import { hashContent } from "@/lib/hash";
 
 export const create = mutation({
   args: {
@@ -16,34 +16,46 @@ export const create = mutation({
 
     const now = new Date().toISOString();
 
-    const organizationId = (user.organization_id ?? undefined) as
-      | string
-      | undefined;
+    const formattedNow = new Intl.DateTimeFormat("en-IN",{
+      dateStyle: "long",
+      timeStyle: "short"
+    }).format(new Date());
+
+    const organizationId = (user.organization_id || undefined) as string | undefined
 
     // Create Doc without currentCommitId
 
     try {
+      const docTitle = args.title ?? "Untitled Document"
+
       const docId = await ctx.db.insert("documents", {
-        title: args.title ?? "Untitled Document",
+        title: docTitle,
         ownerId: user.subject,
         organizationId: organizationId,
         initialContent: args.initialContent,
         createdAt: now,
         updatedAt: now,
         currentCommitId: undefined,
+        rootCommitId: undefined,
       });
 
       if (!docId) {
         throw new ConvexError("Failed to create the document");
       }
 
+      const content = args.initialContent ?? ""
+      const contentHash = hashContent(content);
+
       const firstCommit = await ctx.db.insert("commits", {
         documentId: docId,
         parentCommitId: undefined,
-        content: args.initialContent ?? "",
-        message: "Initial commit",
+        content: content,
+        name:`${docTitle} | commit: ${formattedNow}`,
+        contentHash: contentHash,
+        commitNumber: 1,
         authorId: user.subject,
         createdAt: now,
+        updatedAt: now,
       });
 
       if (!firstCommit) {
@@ -52,8 +64,9 @@ export const create = mutation({
         );
       }
 
-      const patch = await ctx.db.patch(docId, {
+      await ctx.db.patch(docId, {
         currentCommitId: firstCommit,
+        rootCommitId: firstCommit,
       });
 
       return docId;
@@ -121,6 +134,7 @@ export const get = query({
     }
   },
 });
+
 export const removeById = mutation({
   args: {
     documentId: v.id("documents"),
@@ -196,7 +210,7 @@ export const renameById = mutation({
 
     try {
       return await ctx.db.patch(args.documentId, {
-        title: args.title,
+        title: trimmedTitle,
         updatedAt: new Date().toISOString(),
       });
     } catch (error) {
@@ -219,7 +233,7 @@ export const getById = query({
       return document;
     } catch (error) {
       console.error("Document not found");
-      toast.error("Document not found");
+      throw new ConvexError("Document not found")
     }
   },
 });
