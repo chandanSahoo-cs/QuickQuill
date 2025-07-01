@@ -39,3 +39,14 @@ export async function getUser() {
     console.error(error);
   }
 }
+
+export async function getUserById(userId: string) {
+  try {
+    const clerk = await clerkClient();
+    const user = await clerk.users.getUser(userId);
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return null;
+  }
+}

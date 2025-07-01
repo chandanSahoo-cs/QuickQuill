@@ -32,7 +32,7 @@ export const commitDoc = mutation({
     }
 
     const content = args.content || "";
-    const hashedContent = hashContent(content);
+    const hashedContent = await hashContent(content);
 
     const now = new Date().toISOString();
     const formattedNow = new Intl.DateTimeFormat("en-IN", {
@@ -67,10 +67,10 @@ export const commitDoc = mutation({
         documentId: args.documentId,
         parentCommitId: document.currentCommitId,
         content: content,
-        name: `${document.title} | commit: ${formattedNow}`,
+        name: `${document.title} | Commit: ${formattedNow}`,
         contentHash: hashedContent,
         commitNumber: newCommitNumber,
-        authorId: user.subject,
+        authorId: user.name ??  user.email ?? "Anonymous",
         createdAt: now,
         updatedAt: now,
       });

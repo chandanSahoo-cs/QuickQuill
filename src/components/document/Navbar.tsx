@@ -25,6 +25,7 @@ import {
   FilePlusIcon,
   FileSearchIcon,
   FileTextIcon,
+  GitCommitIcon,
   GlobeIcon,
   ItalicIcon,
   PrinterIcon,
@@ -49,6 +50,9 @@ import { RenameDialog } from "@/components/RenameDialog";
 import { DocumentInput, TableMenu } from "@/components/document";
 import { useEditorStore } from "@/store/useEditorStore";
 import { motion } from "framer-motion";
+// import { VersionControlModal } from "../version-control/VersionControlModal";
+import { useState } from "react";
+import { VersionControlModal } from "../version-control/VersionControlModal";
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -57,20 +61,37 @@ interface NavbarProps {
 export const Navbar = ({ data }: NavbarProps) => {
   const { editor } = useEditorStore();
   const router = useRouter();
+  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false)
 
-  const mutation = useMutation(api.documents.create);
 
+  const create = useMutation(api.documents.create);
+  const commit = useMutation(api.commits.commitDoc);
+
+  const onCommit = () => {
+    commit({
+      documentId: data._id,
+      content : editor?.getHTML() || "<p></p>"
+    })
+    .then(()=>toast.success("Commited successfully"))
+    .catch(()=>toast.error("Failed to save commit"))
+  }
+  
   const onNewDocument = () => {
-    mutation({
+    create({
       title: "Untitled Document",
       initialContent: "",
     })
-      .catch(() => toast.error("Something went wrong"))
+      .catch(() => toast.error("Failed to create file"))
       .then((id) => {
         toast.success("Document created");
         router.push(`/documents/${id}`);
       });
   };
+
+  const onVersionHistory = () => {
+    setIsVersionModalOpen(true);
+  }
+
 
   const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
     editor
@@ -208,6 +229,10 @@ export const Navbar = ({ data }: NavbarProps) => {
                     <FileSearchIcon className="size-4 mr-2" />
                     Find In Document
                   </MenubarItem>
+                  <MenubarItem onClick={() => onCommit()}>
+                    <GitCommitIcon className="size-4 mr-2" />
+                    Commit
+                  </MenubarItem>
                   <MenubarSeparator />
                   <RenameDialog documentId={data._id} initialTitle={data.title}>
                     <MenubarItem
@@ -309,6 +334,13 @@ export const Navbar = ({ data }: NavbarProps) => {
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
+              <MenubarMenu>
+                <MenubarTrigger className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg:muted h-auto"
+                onClick={()=>onVersionHistory()}
+                >
+                  Version History
+                </MenubarTrigger>
+              </MenubarMenu>
             </Menubar>
           </div>
         </div>
@@ -324,6 +356,11 @@ export const Navbar = ({ data }: NavbarProps) => {
         />
         <UserButton />
       </div>
+        <VersionControlModal
+        data={data} 
+        isOpen={isVersionModalOpen}
+        onClose={() => setIsVersionModalOpen(false)}
+      />
     </nav>
   );
 };

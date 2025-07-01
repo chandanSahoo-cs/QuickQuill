@@ -44,7 +44,7 @@ export const create = mutation({
       }
 
       const content = args.initialContent ?? ""
-      const contentHash = hashContent(content);
+      const contentHash = await hashContent(content);
 
       const firstCommit = await ctx.db.insert("commits", {
         documentId: docId,
@@ -53,7 +53,7 @@ export const create = mutation({
         name:`${docTitle} | commit: ${formattedNow}`,
         contentHash: contentHash,
         commitNumber: 1,
-        authorId: user.subject,
+        authorId: user.name ??  user.email ?? "Anonymous",
         createdAt: now,
         updatedAt: now,
       });
