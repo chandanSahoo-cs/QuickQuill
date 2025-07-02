@@ -18,12 +18,11 @@ export function Room({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
   const fetchUsers = useCallback(
     () => async () => {
-      console.log("Hello");
       try {
         const list = await getUser();
         setUsers(list || []);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     []

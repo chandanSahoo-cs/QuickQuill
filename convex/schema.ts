@@ -22,16 +22,27 @@ export default defineSchema({
       filterFields: ["ownerId", "organizationId"],
     }),
 
-
   commits: defineTable({
     documentId: v.id("documents"),
     parentCommitId: v.optional(v.id("commits")),
-    content: v.string(),
-    contentHash: v.string(),
+    treeId: v.id("trees"),
     name: v.string(),
     authorId: v.string(),
     createdAt: v.string(),
     updatedAt:v.string(),
     commitNumber: v.optional(v.number()),
   }).index("by_document_id", ["documentId"]),
+
+  blobs: defineTable({
+    hash: v.string(),
+    documentId: v.id("documents"),
+    content: v.string(),
+    createdAt: v.string()
+  }).index("by_document_and_hash",["documentId","hash"]),
+
+  trees : defineTable({
+    documentId: v.id("documents"),
+    blobIds: v.array(v.id("blobs")),
+    createdAt: v.string(),
+  }).index("by_document_id",["documentId"])
 });

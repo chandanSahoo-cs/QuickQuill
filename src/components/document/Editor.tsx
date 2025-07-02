@@ -258,7 +258,6 @@ export const Editor = ({ initialContent }: EditorProps) => {
     },
     onUpdate({ editor }) {
       setEditor(editor)
-      console.log(editor.getHTML());
     },
     onSelectionUpdate({ editor }) {
       setEditor(editor)

@@ -15,11 +15,10 @@ interface DocumentProps {
 
 export const Document = ({ preloadedDocument }: DocumentProps) => {
   const document = usePreloadedQuery(preloadedDocument);
-  const { isLoading, setIsLoading } = useLoadingStore();
+  const {setIsLoading } = useLoadingStore();
   useEffect(() => {
     setIsLoading(false);
   }, []);
-  console.log(isLoading);
   if (!document) {
     throw new Error("Document not found");
   }

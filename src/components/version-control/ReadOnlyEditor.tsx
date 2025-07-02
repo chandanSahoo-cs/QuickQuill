@@ -23,13 +23,17 @@ import Underline from "@tiptap/extension-underline"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import ImageResize from "tiptap-extension-resize-image"
+import { EditorJSON } from "@/types/type"
+
+
 
 interface ReadOnlyEditorProps {
-  html: string
+  json: EditorJSON
   className?: string
 }
 
-export const ReadOnlyEditor = ({ html, className = "" }: ReadOnlyEditorProps) => {
+
+export const ReadOnlyEditor = ({ json, className = "" }: ReadOnlyEditorProps) => {
   const editor = useEditor({
     extensions: [
       FontSizeExtension,
@@ -60,7 +64,7 @@ export const ReadOnlyEditor = ({ html, className = "" }: ReadOnlyEditorProps) =>
       Code,
       Blockquote,
     ],
-    content: html,
+    content: json,
     editable: false,
     editorProps: {
       attributes: {
@@ -70,10 +74,10 @@ export const ReadOnlyEditor = ({ html, className = "" }: ReadOnlyEditorProps) =>
   })
 
   useEffect(() => {
-    if (editor && html !== editor.getHTML()) {
-      editor.commands.setContent(html)
+    if (editor) {
+      editor.commands.setContent(json)
     }
-  }, [editor, html])
+  }, [editor, json])
 
   if (!editor) {
     return (

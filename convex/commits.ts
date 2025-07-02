@@ -1,6 +1,8 @@
 import { hashContent } from "@/lib/hash";
+import { parseEditorContentToBlocks } from "@/lib/parse-editor-content";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
 // Take id of the document
@@ -13,77 +15,193 @@ import { mutation, query } from "./_generated/server";
 // create the commit
 // change the currentCommitId to id of the new commit
 
+// export const commitDoc = mutation({
+//   args: {
+//     documentId: v.id("documents"),
+//     content: v.optional(v.string()),
+//   },
+//   handler: async (ctx, args) => {
+//     const user = await ctx.auth.getUserIdentity();
+
+//     if (!user) {
+//       throw new ConvexError("Unauthorized");
+//     }
+
+//     const document = await ctx.db.get(args.documentId);
+
+//     if (!document) {
+//       throw new ConvexError("Document not found");
+//     }
+
+//     const content = args.content || "";
+//     const hashedContent = await hashContent(content);
+
+//     const now = new Date().toISOString();
+//     const formattedNow = new Intl.DateTimeFormat("en-IN", {
+//       dateStyle: "long",
+//       timeStyle: "short",
+//     }).format(new Date());
+
+//     try {
+//       const count = await ctx.db
+//         .query("commits")
+//         .withIndex("by_document_id", (q) => q.eq("documentId", args.documentId))
+//         .collect();
+
+//       const newCommitNumber = count.length + 1;
+
+//       const currentCommitId = document.currentCommitId;
+
+//       if (!currentCommitId) {
+//         throw new ConvexError("Current commit Id not found");
+//       }
+//       const currentCommit = await ctx.db.get(currentCommitId);
+
+//       if (!currentCommit) {
+//         throw new ConvexError("Current commit not found");
+//       }
+
+//       if (currentCommit.contentHash === hashedContent) {
+//         throw new ConvexError("No new changes");
+//       }
+
+//       const newCommit = await ctx.db.insert("commits", {
+//         documentId: args.documentId,
+//         parentCommitId: document.currentCommitId,
+//         content: content,
+//         name: `${document.title} | Commit: ${formattedNow}`,
+//         contentHash: hashedContent,
+//         commitNumber: newCommitNumber,
+//         authorId: user.name ??  user.email ?? "Anonymous",
+//         createdAt: now,
+//         updatedAt: now,
+//       });
+
+//       await ctx.db.patch(args.documentId, {
+//         currentCommitId: newCommit,
+//       });
+
+//       return newCommit;
+//     } catch (error) {
+//       console.error("Failed to create commit: ", error);
+//       throw new ConvexError("Failed to create commit");
+//     }
+//   },
+// });
+
+function arraysEqual<T>(a: T[], b: T[]) {
+  return (
+    a.length === b.length && a.every((value, index) => value === b[index])
+  );
+}
+
 export const commitDoc = mutation({
   args: {
     documentId: v.id("documents"),
-    content: v.optional(v.string()),
+    content: v.optional(v.any()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { documentId, content }) => {
     const user = await ctx.auth.getUserIdentity();
+    if (!user) throw new ConvexError("Unauthorized");
+    // throw new ConvexError("Test 1");
 
-    if (!user) {
-      throw new ConvexError("Unauthorized");
-    }
+    const document = await ctx.db.get(documentId);
+    if (!document) throw new ConvexError("Document not found");
 
-    const document = await ctx.db.get(args.documentId);
+    const defaultJson = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          attrs: { lineHeight: "normal", textAlign: "left" },
+        },
+      ],
+    };
+    const editorJson = content || defaultJson;
 
-    if (!document) {
-      throw new ConvexError("Document not found");
-    }
-
-    const content = args.content || "";
-    const hashedContent = await hashContent(content);
-
+    const blocks = parseEditorContentToBlocks(editorJson);
     const now = new Date().toISOString();
+
+    const blobIds: Id<"blobs">[] = [];
+
+    for (const block of blocks) {
+      const blockData = JSON.stringify(block.content);
+      const hash = await hashContent(blockData);
+
+      const existingBlob = await ctx.db
+        .query("blobs")
+        .withIndex("by_document_and_hash", (q) =>
+          q.eq("documentId", documentId).eq("hash", hash)
+        )
+        .first();
+
+      if (existingBlob) {
+        blobIds.push(existingBlob._id);
+      } else {
+        const newBlobId = await ctx.db.insert("blobs", {
+          documentId,
+          content: blockData,
+          hash,
+          createdAt: now,
+        });
+        blobIds.push(newBlobId);
+      }
+    }
+
+    const treeId = await ctx.db.insert("trees", {
+      documentId,
+      blobIds,
+      createdAt: now,
+    });
+
     const formattedNow = new Intl.DateTimeFormat("en-IN", {
       dateStyle: "long",
       timeStyle: "short",
     }).format(new Date());
 
-    try {
-      const count = await ctx.db
-        .query("commits")
-        .withIndex("by_document_id", (q) => q.eq("documentId", args.documentId))
-        .collect();
+    const currentCommitId = document.currentCommitId;
+    if (!currentCommitId) throw new ConvexError("Current commitId missing");
 
-      const newCommitNumber = count.length + 1;
+    const currentCommit = await ctx.db.get(currentCommitId);
+    if (!currentCommit) throw new ConvexError("Current commit not found");
 
-      const currentCommitId = document.currentCommitId;
+    const currentTree = await ctx.db.get(currentCommit.treeId);
+    const previouseBlobIds = currentTree?.blobIds ?? [];
 
-      if (!currentCommitId) {
-        throw new ConvexError("Current commit Id not found");
-      }
-      const currentCommit = await ctx.db.get(currentCommitId);
+    const isSame = arraysEqual(previouseBlobIds,blobIds)
 
-      if (!currentCommit) {
-        throw new ConvexError("Current commit not found");
-      }
-
-      if (currentCommit.contentHash === hashedContent) {
-        throw new ConvexError("No new changes");
-      }
-
-      const newCommit = await ctx.db.insert("commits", {
-        documentId: args.documentId,
-        parentCommitId: document.currentCommitId,
-        content: content,
-        name: `${document.title} | Commit: ${formattedNow}`,
-        contentHash: hashedContent,
-        commitNumber: newCommitNumber,
-        authorId: user.name ??  user.email ?? "Anonymous",
-        createdAt: now,
-        updatedAt: now,
-      });
-
-      await ctx.db.patch(args.documentId, {
-        currentCommitId: newCommit,
-      });
-
-      return newCommit;
-    } catch (error) {
-      console.error("Failed to create commit: ", error);
-      throw new ConvexError("Failed to create commit");
+    if(isSame){
+      console.error("Nothing to change")
+      throw new ConvexError("Nothing to change")
     }
+
+    const commitCount = await ctx.db
+      .query("commits")
+      .withIndex("by_document_id", (q) => q.eq("documentId", documentId))
+      .collect();
+
+    const newCommit = await ctx.db.insert("commits", {
+      documentId,
+      parentCommitId: currentCommitId,
+      treeId,
+      name: `${document.title} | Commit: ${formattedNow}`,
+      commitNumber: commitCount.length + 1,
+      authorId: user.name ?? user.email ?? "Anonymous",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    if(!newCommit){
+      throw new ConvexError(
+        "Failed to link the document with the new commit"
+      )
+    }
+
+    await ctx.db.patch(documentId, {
+      currentCommitId: newCommit,
+    });
+
+    return newCommit;
   },
 });
 
@@ -126,27 +244,84 @@ export const getPaginatedCommit = query({
   },
 });
 
-export const getCommit = query({
-  args: {
-    commitId: v.id("commits"),
+// check for user
+//get commit tree
+//get blobids from commit tree
+//get all those blob and content
+
+export const getContentByCommitId = query({
+  args :{
+    commitId: v.id("commits")
   },
-  handler: async (ctx, { commitId }) => {
+  handler: async(ctx,{commitId}) =>{
     const user = await ctx.auth.getUserIdentity();
-    if (!user) {
-      throw new ConvexError("Unauthorized");
+    if(!user){
+      throw new ConvexError("Unauthorized")
     }
+
     try {
       const commit = await ctx.db.get(commitId);
-      if (!commit) {
-        throw new ConvexError("Commit not found");
+
+      if(!commit){
+        throw new ConvexError("Commit doesn't exist");
       }
-      return commit;
+
+      const tree = await ctx.db.get(commit.treeId);
+
+      if(!tree){
+        throw new ConvexError("Commit tree doesn't exist")
+      }
+
+      const blobIds = tree.blobIds;
+
+      const blobs = await Promise.all(
+        blobIds.map((id)=>ctx.db.get(id))
+      )
+
+      if(blobs.some((b)=>b===null)){
+        throw new ConvexError("One or more blobs are missing");
+      }
+
+      const content = blobs.map((blob)=>JSON.parse(blob!.content))
+
+      const reconstructDoc = {
+        type: "doc",
+        content,
+      }
+
+      if(!reconstructDoc){
+        return "Hello";
+      }
+
+      return reconstructDoc;
     } catch (error) {
-      console.error("Commit not found");
-      throw new ConvexError("Commit not found");
+      console.error("Failed to get commit content")
+      throw new ConvexError("Failed to get commit content")
     }
-  },
-});
+  }
+})
+
+// export const getCommit = query({
+//   args: {
+//     commitId: v.id("commits"),
+//   },
+//   handler: async (ctx, { commitId }) => {
+//     const user = await ctx.auth.getUserIdentity();
+//     if (!user) {
+//       throw new ConvexError("Unauthorized");
+//     }
+//     try {
+//       const commit = await ctx.db.get(commitId);
+//       if (!commit) {
+//         throw new ConvexError("Commit not found");
+//       }
+//       return commit;
+//     } catch (error) {
+//       console.error("Commit not found");
+//       throw new ConvexError("Commit not found");
+//     }
+//   },
+// });
 
 export const renameCommit = mutation({
   args: {

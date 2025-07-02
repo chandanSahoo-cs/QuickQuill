@@ -61,8 +61,7 @@ interface NavbarProps {
 export const Navbar = ({ data }: NavbarProps) => {
   const { editor } = useEditorStore();
   const router = useRouter();
-  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false)
-
+  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
 
   const create = useMutation(api.documents.create);
   const commit = useMutation(api.commits.commitDoc);
@@ -70,12 +69,12 @@ export const Navbar = ({ data }: NavbarProps) => {
   const onCommit = () => {
     commit({
       documentId: data._id,
-      content : editor?.getHTML() || "<p></p>"
+      content: editor?.getJSON(),
     })
-    .then(()=>toast.success("Commited successfully"))
-    .catch(()=>toast.error("Failed to save commit"))
-  }
-  
+      .then(() => toast.success("Commited successfully"))
+      .catch(() => toast.error("Failed to save commit"));
+  };
+
   const onNewDocument = () => {
     create({
       title: "Untitled Document",
@@ -90,8 +89,7 @@ export const Navbar = ({ data }: NavbarProps) => {
 
   const onVersionHistory = () => {
     setIsVersionModalOpen(true);
-  }
-
+  };
 
   const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
     editor
@@ -107,8 +105,6 @@ export const Navbar = ({ data }: NavbarProps) => {
     a.href = url;
     a.download = filename;
     a.click();
-
-    console.log("Hello");
   };
 
   const onSaveJson = () => {
@@ -129,8 +125,6 @@ export const Navbar = ({ data }: NavbarProps) => {
       type: "text/html",
     });
     onDownload(blob, `${data.title}.html`);
-
-    console.log("Test from HTML");
   };
 
   const onSaveText = () => {
@@ -335,9 +329,9 @@ export const Navbar = ({ data }: NavbarProps) => {
                 </MenubarContent>
               </MenubarMenu>
               <MenubarMenu>
-                <MenubarTrigger className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg:muted h-auto"
-                onClick={()=>onVersionHistory()}
-                >
+                <MenubarTrigger
+                  className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg:muted h-auto"
+                  onClick={() => onVersionHistory()}>
                   Version History
                 </MenubarTrigger>
               </MenubarMenu>
@@ -356,8 +350,8 @@ export const Navbar = ({ data }: NavbarProps) => {
         />
         <UserButton />
       </div>
-        <VersionControlModal
-        data={data} 
+      <VersionControlModal
+        data={data}
         isOpen={isVersionModalOpen}
         onClose={() => setIsVersionModalOpen(false)}
       />

@@ -1,7 +1,9 @@
+import { hashContent } from "@/lib/hash";
+import { parseEditorContentToBlocks } from "@/lib/parse-editor-content";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { hashContent } from "@/lib/hash";
+import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
   args: {
@@ -16,17 +18,19 @@ export const create = mutation({
 
     const now = new Date().toISOString();
 
-    const formattedNow = new Intl.DateTimeFormat("en-IN",{
+    const formattedNow = new Intl.DateTimeFormat("en-IN", {
       dateStyle: "long",
-      timeStyle: "short"
+      timeStyle: "short",
     }).format(new Date());
 
-    const organizationId = (user.organization_id || undefined) as string | undefined
+    const organizationId = (user.organization_id || undefined) as
+      | string
+      | undefined;
 
     // Create Doc without currentCommitId
 
     try {
-      const docTitle = args.title ?? "Untitled Document"
+      const docTitle = args.title ?? "Untitled Document";
 
       const docId = await ctx.db.insert("documents", {
         title: docTitle,
@@ -43,17 +47,59 @@ export const create = mutation({
         throw new ConvexError("Failed to create the document");
       }
 
-      const content = args.initialContent ?? ""
-      const contentHash = await hashContent(content);
+      const content = args.initialContent ?? "";
+      const defaultJson = {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            attrs: { lineHeight: "normal", textAlign: "left" },
+          },
+        ],
+      };
+      const editorJson = content || defaultJson;
+
+      const blocks = parseEditorContentToBlocks(editorJson);
+
+      const blobIds: Id<"blobs">[] = [];
+
+      for (const block of blocks) {
+        const blockData = JSON.stringify(block.content);
+        const hash = await hashContent(blockData);
+
+        const existingBlob = await ctx.db
+          .query("blobs")
+          .withIndex("by_document_and_hash", (q) =>
+            q.eq("documentId", docId).eq("hash", hash)
+          )
+          .first();
+
+        if (existingBlob) {
+          blobIds.push(existingBlob._id);
+        } else {
+          const newBlobId = await ctx.db.insert("blobs", {
+            documentId: docId,
+            content: blockData,
+            hash,
+            createdAt: now,
+          });
+          blobIds.push(newBlobId);
+        }
+      }
+
+      const treeId = await ctx.db.insert("trees", {
+        documentId:docId,
+        blobIds,
+        createdAt: now,
+      });
 
       const firstCommit = await ctx.db.insert("commits", {
         documentId: docId,
         parentCommitId: undefined,
-        content: content,
-        name:`${docTitle} | commit: ${formattedNow}`,
-        contentHash: contentHash,
+        treeId,
+        name: `${docTitle} | commit: ${formattedNow}`,
         commitNumber: 1,
-        authorId: user.name ??  user.email ?? "Anonymous",
+        authorId: user.name ?? user.email ?? "Anonymous",
         createdAt: now,
         updatedAt: now,
       });
@@ -233,7 +279,7 @@ export const getById = query({
       return document;
     } catch (error) {
       console.error("Document not found");
-      throw new ConvexError("Document not found")
+      throw new ConvexError("Document not found");
     }
   },
 });
