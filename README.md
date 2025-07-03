@@ -6,8 +6,8 @@ A powerful, real-time collaborative editor designed to streamline teamwork on do
 ## Features
 - **Real-time Collaboration**: Multiple users can edit the same document simultaneously, with changes reflected instantly for all collaborators (powered by Liveblocks)
 
-![Home Page](/home-page.png)
-![Document Page](/document-page.png)
+![Home Page](/public/home-page.png)
+![Document Page](/public/document-page.png)
 
 - **Git-like Version Control**:
   - Commit History: Track all committed versions of your document
@@ -18,8 +18,8 @@ A powerful, real-time collaborative editor designed to streamline teamwork on do
 - **Shadcn UI**: Modern, accessible component library built on Radix UI and Tailwind CSS
 - **Intuitive UI**: Clean, user-friendly interface for optimal editing experience
 
-![Diff Checker](/diff-checker.png)
-![Version Control](/version-control.png)
+![Diff Checker](/public/diff-checker.png)
+![Version Control](/public/version-control.png)
 
 ## Technologies Used
 ### Frontend:
