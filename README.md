@@ -1,4 +1,4 @@
-# QuickQuill: Live Collaborative Editor with Git-like Version Control
+# QuickQuill: Real-Time Editor with Git-like Version Control
 
 ## Overview
 A powerful, real-time collaborative editor designed to streamline teamwork on documents and code. Built with Next.js and styled with Shadcn UI, it offers a seamless live editing experience coupled with robust Git-like version control and an integrated diff checker.
