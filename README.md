@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QuickQuill: Live Collaborative Editor with Git-like Version Control
 
-## Getting Started
+## Overview
+A powerful, real-time collaborative editor designed to streamline teamwork on documents and code. Built with Next.js and styled with Shadcn UI, it offers a seamless live editing experience coupled with robust Git-like version control and an integrated diff checker.
 
-First, run the development server:
+## Features
+- **Real-time Collaboration**: Multiple users can edit the same document simultaneously, with changes reflected instantly for all collaborators (powered by Liveblocks)
+- **Git-like Version Control**:
+  - Commit History: Track all committed versions of your document
+  - Version Snapshots: Easily revert to previous states or compare any two committed versions
+- **Integrated Diff Checker**: Visually compare changes between versions using the Longest Common Subsequence (LCS) algorithm
+- **Notion-like Slash Commands**: Intuitive `/commands` for quickly inserting elements and formatting text
+- **Next.js Framework**: Server-side rendering (SSR) and static site generation (SSG) support
+- **Shadcn UI**: Modern, accessible component library built on Radix UI and Tailwind CSS
+- **Intuitive UI**: Clean, user-friendly interface for optimal editing experience
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies Used
+### Frontend:
+- Next.js (React Framework)
+- Shadcn UI (Component Library)
+- Tailwind CSS (Utility-first CSS framework)
+- TipTap (Extensible rich text editor)
+  - Custom TipTap Extensions for slash commands
+- Liveblocks (Real-time collaboration infrastructure)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Backend:
+- Convex (Full-stack platform)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Version Control:
+- Custom Git-like implementation storing document snapshots
+- LCS algorithm for diff comparisons
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Usage
+1. **Create/Open a Document**:
+   - Navigate to the editor interface
+   - Create new documents or open existing ones
 
-## Learn More
+2. **Collaborate in Real-time**:
+   - Share document URL with collaborators
+   - See instant updates from all users
 
-To learn more about Next.js, take a look at the following resources:
+3. **Use Slash Commands**:
+   - Type `/` to access formatting options and content blocks
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Commit Changes**:
+   - Click "Commit" button when satisfied with changes
+   - Add descriptive commit message
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **View Version History**:
+   - Access "History" panel to see all committed versions
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. **Compare Versions**:
+   - Select any two versions from history
+   - View side-by-side or inline comparison with highlighted differences
+   - Option to revert to selected versions

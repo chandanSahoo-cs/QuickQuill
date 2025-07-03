@@ -40,7 +40,7 @@ export const RenameCommit = ({
     setIsUpdating(true);
     rename({ commitId:commit._id, newCommitName: name.trim() || commit.name })
       .then(() => toast.success("Commit renamed successfully"))
-      .catch(() => toast.error("Something went wrong"))
+      .catch(() => toast.error("Failed to rename commit"))
       .finally(() => {
         setIsUpdating(false);
         setIsOpen(false);

@@ -72,7 +72,10 @@ export const Navbar = ({ data }: NavbarProps) => {
       content: editor?.getJSON(),
     })
       .then(() => toast.success("Commited successfully"))
-      .catch(() => toast.error("Failed to save commit"));
+      .catch((error) => {
+        if(error.data === "Nothing to change") toast.warning(error.data)
+        else toast.warning(error.data)
+      });
   };
 
   const onNewDocument = () => {

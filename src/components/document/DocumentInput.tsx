@@ -46,7 +46,7 @@ export const DocumentInput = ({ title, id }: DocumentInputProp) => {
         toast.success("Document updated successfully")
         setIsEditing(false)
       })
-      .catch(() => toast.error("Something went wrong"))
+      .catch((error) => toast.error(error.data))
       .finally(() => setIsPending(false))
   })
 
@@ -58,7 +58,7 @@ export const DocumentInput = ({ title, id }: DocumentInputProp) => {
         toast.success("Document updated successfully")
         setIsEditing(false)
       })
-      .catch(() => toast.error("Something went wrong"))
+      .catch((error) => toast.error(error.data))
       .finally(() => setIsPending(false))
   }
 

@@ -48,7 +48,7 @@ export const RemoveDialog = ({ documentId, children, onClick }: RemoveDialogProp
       .then(() => {
         toast.success("Document deleted successfully")
       })
-      .catch(() => toast.error("Something went wrong"))
+      .catch(() => toast.error("Failed to delete document"))
       .finally(() => setIsRemoving(false))
   }
 
