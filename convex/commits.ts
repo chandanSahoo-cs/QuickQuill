@@ -90,14 +90,13 @@ import { mutation, query } from "./_generated/server";
 // });
 
 function arraysEqual<T>(a: T[], b: T[]) {
-  return (
-    a.length === b.length && a.every((value, index) => value === b[index])
-  );
+  return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
 export const commitDoc = mutation({
   args: {
     documentId: v.id("documents"),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     content: v.optional(v.any()),
   },
   handler: async (ctx, { documentId, content }) => {
@@ -168,11 +167,11 @@ export const commitDoc = mutation({
     const currentTree = await ctx.db.get(currentCommit.treeId);
     const previouseBlobIds = currentTree?.blobIds ?? [];
 
-    const isSame = arraysEqual(previouseBlobIds,blobIds)
+    const isSame = arraysEqual(previouseBlobIds, blobIds);
 
-    if(isSame){
-      console.error("Nothing to change")
-      throw new ConvexError("Nothing to change")
+    if (isSame) {
+      console.error("Nothing to change");
+      throw new ConvexError("Nothing to change");
     }
 
     const commitCount = await ctx.db
@@ -191,10 +190,8 @@ export const commitDoc = mutation({
       updatedAt: now,
     });
 
-    if(!newCommit){
-      throw new ConvexError(
-        "Failed to link the document with the new commit"
-      )
+    if (!newCommit) {
+      throw new ConvexError("Failed to link the document with the new commit");
     }
 
     await ctx.db.patch(documentId, {
@@ -250,56 +247,54 @@ export const getPaginatedCommit = query({
 //get all those blob and content
 
 export const getContentByCommitId = query({
-  args :{
-    commitId: v.id("commits")
+  args: {
+    commitId: v.id("commits"),
   },
-  handler: async(ctx,{commitId}) =>{
+  handler: async (ctx, { commitId }) => {
     const user = await ctx.auth.getUserIdentity();
-    if(!user){
-      throw new ConvexError("Unauthorized")
+    if (!user) {
+      throw new ConvexError("Unauthorized");
     }
 
     try {
       const commit = await ctx.db.get(commitId);
 
-      if(!commit){
+      if (!commit) {
         throw new ConvexError("Commit doesn't exist");
       }
 
       const tree = await ctx.db.get(commit.treeId);
 
-      if(!tree){
-        throw new ConvexError("Commit tree doesn't exist")
+      if (!tree) {
+        throw new ConvexError("Commit tree doesn't exist");
       }
 
       const blobIds = tree.blobIds;
 
-      const blobs = await Promise.all(
-        blobIds.map((id)=>ctx.db.get(id))
-      )
+      const blobs = await Promise.all(blobIds.map((id) => ctx.db.get(id)));
 
-      if(blobs.some((b)=>b===null)){
+      if (blobs.some((b) => b === null)) {
         throw new ConvexError("One or more blobs are missing");
       }
 
-      const content = blobs.map((blob)=>JSON.parse(blob!.content))
+      const content = blobs.map((blob) => JSON.parse(blob!.content));
 
       const reconstructDoc = {
         type: "doc",
         content,
-      }
+      };
 
-      if(!reconstructDoc){
+      if (!reconstructDoc) {
         return "Hello";
       }
 
       return reconstructDoc;
     } catch (error) {
-      console.error("Failed to get commit content")
-      throw new ConvexError("Failed to get commit content")
+      console.error("Failed to get commit content");
+      throw new ConvexError("Failed to get commit content");
     }
-  }
-})
+  },
+});
 
 // export const getCommit = query({
 //   args: {

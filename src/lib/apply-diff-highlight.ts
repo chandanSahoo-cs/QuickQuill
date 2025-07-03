@@ -1,9 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TextNode = { text: string; node: any; blockIndex: number };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractTextNodes(doc: any): TextNode[] {
   const nodes: TextNode[] = [];
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   doc.content?.forEach((block: any, i: number) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     block.content?.forEach((child: any) => {
       if (child.type === "text") {
         nodes.push({ text: child.text, node: child, blockIndex: i });
@@ -33,7 +35,7 @@ function lcs(a: string[], b: string[]): number[][] {
 
   return dp;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function applyDiffHighlight(currentDoc: any, commitDoc: any) {
   const currentTextNodes = extractTextNodes(currentDoc);
   const commitTextNodes = extractTextNodes(commitDoc);
@@ -78,6 +80,7 @@ export function applyDiffHighlight(currentDoc: any, commitDoc: any) {
     ];
     addedDoc.content[blockIndex].content = commitDoc.content[
       blockIndex
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ].content.map((c: any) => (c.text === node.text ? node : c));
   });
 
@@ -89,6 +92,7 @@ export function applyDiffHighlight(currentDoc: any, commitDoc: any) {
     ];
     modifiedDoc.content[blockIndex].content = currentDoc.content[
       blockIndex
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     ].content.map((c: any) => (c.text === node.text ? node : c));
   });
 

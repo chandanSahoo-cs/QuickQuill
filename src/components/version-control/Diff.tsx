@@ -50,7 +50,6 @@ export const Diff = ({ data, onClose }: DiffProps) => {
   const [isRestoring, setIsRestoring] = useState(false);
 
   const restore = useMutation(api.commits.restoreCommit);
-  const rename = useMutation(api.commits.renameCommit);
 
   // Auto-select first version when results load
   useEffect(() => {
