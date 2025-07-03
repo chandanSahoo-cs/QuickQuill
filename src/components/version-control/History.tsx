@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
 import { ReadOnlyEditor } from "./ReadOnlyEditor";
+import { RenameCommit } from "./RenameCommit";
 
 interface HistoryProps {
   data: Doc<"documents">;
@@ -59,13 +60,9 @@ export const History = ({ data, onClose }: HistoryProps) => {
       : "skip"
   );
 
-  // console.log(getContent);
-
   useEffect(() => {
-    if(getContent) setContent(getContent as EditorJSON);
-    console.log(getContent);
-    console.log(selectedVersion)
-  }, [selectedVersion,getContent]);
+    if (getContent) setContent(getContent as EditorJSON);
+  }, [selectedVersion, getContent]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -101,12 +98,6 @@ export const History = ({ data, onClose }: HistoryProps) => {
     }
   };
 
-  // const handleLoadMore = () => {
-  //   if (status === "CanLoadMore") {
-  //     loadMore(5);
-  //   }
-  // };
-
   return (
     <div className="flex  h-[700px] ">
       {/* Main Content Area - Document Preview */}
@@ -128,27 +119,43 @@ export const History = ({ data, onClose }: HistoryProps) => {
                     </p>
                   </div>
                 </div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}>
-                  <Button
-                    onClick={onRestore}
-                    disabled={isRestoring}
-                    className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-6 py-2 font-medium">
-                    {isRestoring ? (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Restoring...
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <RotateCcwIcon className="h-4 w-4" />
-                        Restore This Version
-                      </div>
-                    )}
-                  </Button>
-                </motion.div>
+                <div className="flex gap-2">
+                  <RenameCommit commit={selectedVersion}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}>
+                      <Button
+                        onClick={onRestore}
+                        disabled={isRestoring}
+                        className="bg-white hover:bg-white text-purple-600 rounded-lg  py-2 font-medium border-purple-600 border-2">
+                        <div className="flex items-center gap-2">
+                          <RotateCcwIcon className="h-4 w-4" />
+                          Restore This Version
+                        </div>
+                      </Button>
+                    </motion.div>
+                  </RenameCommit>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}>
+                    <Button
+                      onClick={onRestore}
+                      disabled={isRestoring}
+                      className="bg-violet-600 hover:bg-violet-600 text-white rounded-lg px-6 py-2 font-medium">
+                      {isRestoring ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Restoring...
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <RotateCcwIcon className="h-4 w-4" />
+                          Restore This Version
+                        </div>
+                      )}
+                    </Button>
+                  </motion.div>
+                </div>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ import { useState } from "react";
 import type { Doc } from "../../../convex/_generated/dataModel";
 import { History } from "./History";
 import { ViewMode } from "@/types/type";
+import { Diff } from "./Diff";
 
 interface VersionControlModalProps {
   data: Doc<"documents">;
@@ -89,25 +90,7 @@ export const VersionControlModal = ({
               <History data={data} onClose={onClose} />
             )}
             {viewMode === "diff" && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center justify-center h-full">
-                <div className="text-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mx-auto mb-6">
-                    <GitCompareIcon className="h-10 w-10 text-violet-500" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-700 mb-2">
-                    Compare Versions
-                  </h3>
-                  <p className="text-slate-500 max-w-md">
-                    Diff functionality will be available soon. You can compare
-                    different versions of your document here.
-                  </p>
-                </div>
-              </motion.div>
+              <Diff data={data} onClose={onClose}/>
             )}
           </div>
         </motion.div>
