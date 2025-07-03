@@ -291,7 +291,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
           <EditorContent editor={editor} />
           <SlashCmd.Root editor={editor}>
             <SlashCmd.Cmd className="bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl rounded-xl p-2">
-              <SlashCmd.List className="max-h-96 overflow-y-auto space-y-1">
+              <SlashCmd.List className="max-h-96 overflow-y-auto space-y-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-hide">
                 {suggestions.map(({ title, icon: Icon, command }) => (
                   <SlashCmd.Item
                     value={title}
