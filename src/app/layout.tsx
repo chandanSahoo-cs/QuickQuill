@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "QuickQuill",
   description: "Craft Documents with Precision.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/logo.svg",
   },
 };
 
