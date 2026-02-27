@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { executablePath } from "puppeteer-core";
 
 export const runtime= "nodejs"
 
