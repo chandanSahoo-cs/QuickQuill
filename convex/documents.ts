@@ -287,7 +287,7 @@ export const getById = query({
 export const getByIds = query({
   args: { documentIds: v.array(v.id("documents")) },
   handler: async (ctx, { documentIds }) => {
-    const documents = [];
+    const documents :{ id: Id<"documents">; name: string; }[] = [];
     try {
       for (const id of documentIds) {
         const document = await ctx.db.get(id);

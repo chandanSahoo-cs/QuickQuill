@@ -10,19 +10,15 @@ export const AuthLayout = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Quill Facts (60%) */}
       <div className="flex-[3] bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 relative overflow-hidden">
         <QuillFacts />
       </div>
 
-      {/* Right Side - Auth Forms (40%) */}
       <div className="flex-[2] bg-white/95 backdrop-blur-sm flex items-center justify-center p-8 relative">
         <div className="absolute inset-0 bg-gradient-to-bl from-purple-50/50 to-pink-50/50" />
 
         <Card className="w-full max-w-md p-8 bg-white/90 backdrop-blur-sm border-0 shadow-2xl shadow-purple-500/10 relative z-10">
-          {/* Toggle Buttons */}
           <div className="relative mb-8 bg-gray-100 rounded-lg p-1 overflow-hidden">
-            {/* Slider Background */}
             <motion.div
               layout
               animate={{
@@ -58,7 +54,6 @@ export const AuthLayout = () => {
             </div>
           </div>
 
-          {/* Form Container with Sliding Animation */}
           <div className="relative overflow-hidden">
             <AnimatePresence mode="wait">
               {!isSignUp ? (
@@ -134,7 +129,6 @@ export const AuthLayout = () => {
           </div>
         </Card>
 
-        {/* Decorative Elements */}
         <div className="absolute top-10 right-10 w-20 h-20 bg-purple-300/20 rounded-full blur-xl" />
         <div className="absolute bottom-10 left-10 w-16 h-16 bg-pink-300/20 rounded-full blur-lg" />
       </div>

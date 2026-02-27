@@ -1,13 +1,33 @@
 import { NextResponse } from "next/server";
-import puppeteer from "puppeteer";
+import { executablePath } from "puppeteer-core";
+
+export const runtime= "nodejs"
+
+const getBrowser = async () =>{
+  const isVercel = !!process.env.VERCEL;
+
+  if(isVercel){
+    const chromium = (await import("@sparticuz/chromium")).default
+    const puppeteer = await import("puppeteer-core")
+
+    return await puppeteer.launch({
+      args : chromium.args,
+      executablePath : await chromium.executablePath(),
+      headless:true,
+    })
+  }else{
+    const puppeteer = await import("puppeteer");
+    return await puppeteer.launch({
+      headless : true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    })
+  }
+}
 
 export async function POST(req: Request) {
   const { fullHtml } = await req.json();
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"], // Needed for most hosts
-  });
+  const browser = await getBrowser();
 
   const page = await browser.newPage();
   await page.setContent(fullHtml, { waitUntil: "networkidle0" });
@@ -22,6 +42,8 @@ export async function POST(req: Request) {
       right: "16px",
     },
   });
+
+  console.log(pdfBuffer);
 
   await browser.close();
 
