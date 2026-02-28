@@ -224,7 +224,7 @@ export const getPaginatedCommit = query({
 
     if (document.ownerId !== user.subject) {
       throw new ConvexError(
-        "You do not have permission to delete this document."
+        "You do not have permission to view version history of this document"
       );
     }
 

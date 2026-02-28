@@ -16,7 +16,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton, useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import {
   BoldIcon,
@@ -60,11 +60,14 @@ interface NavbarProps {
 
 export const Navbar = ({ data }: NavbarProps) => {
   const { editor } = useEditorStore();
+  const { user } = useUser();
   const router = useRouter();
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
 
   const create = useMutation(api.documents.create);
   const commit = useMutation(api.commits.commitDoc);
+
+  const owner = data.ownerId === user?.id;
 
   const onCommit = () => {
     commit({
@@ -73,8 +76,8 @@ export const Navbar = ({ data }: NavbarProps) => {
     })
       .then(() => toast.success("Commited successfully"))
       .catch((error) => {
-        if(error.data === "Nothing to change") toast.warning(error.data)
-        else toast.warning(error.data)
+        if (error.data === "Nothing to change") toast.warning(error.data);
+        else toast.warning(error.data);
       });
   };
 
@@ -331,13 +334,15 @@ export const Navbar = ({ data }: NavbarProps) => {
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
-              <MenubarMenu>
-                <MenubarTrigger
-                  className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg:muted h-auto"
-                  onClick={() => onVersionHistory()}>
-                  Version History
-                </MenubarTrigger>
-              </MenubarMenu>
+              {owner && (
+                <MenubarMenu>
+                  <MenubarTrigger
+                    className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg:muted h-auto"
+                    onClick={() => onVersionHistory()}>
+                    Version History
+                  </MenubarTrigger>
+                </MenubarMenu>
+              )}
             </Menubar>
           </div>
         </div>
