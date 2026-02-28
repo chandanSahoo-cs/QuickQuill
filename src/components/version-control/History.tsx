@@ -31,12 +31,12 @@ export const History = ({ data, onClose }: HistoryProps) => {
   const { results, loadMore, status } = usePaginatedQuery(
     api.commits.getPaginatedCommit,
     { documentId: data._id },
-    { initialNumItems: 5 }
+    { initialNumItems: 5 },
   );
 
   const { editor } = useEditorStore();
   const [selectedVersion, setSelectedVersion] = useState<Doc<"commits"> | null>(
-    null
+    null,
   );
   const [isRestoring, setIsRestoring] = useState(false);
 
@@ -57,7 +57,7 @@ export const History = ({ data, onClose }: HistoryProps) => {
       ? {
           commitId: selectedVersion?._id,
         }
-      : "skip"
+      : "skip",
   );
 
   useEffect(() => {
@@ -125,12 +125,11 @@ export const History = ({ data, onClose }: HistoryProps) => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}>
                       <Button
-                        onClick={onRestore}
                         disabled={isRestoring}
                         className="bg-white hover:bg-white text-purple-600 rounded-lg  py-2 font-medium border-purple-600 border-2">
                         <div className="flex items-center gap-2">
                           <RotateCcwIcon className="h-4 w-4" />
-                          Restore This Version
+                          Rename this Version
                         </div>
                       </Button>
                     </motion.div>
